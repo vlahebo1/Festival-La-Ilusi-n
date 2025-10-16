@@ -56,7 +56,7 @@ h5 {
   <button id="enterBtn">Entrar al bosque</button>
 
 <div><h6>Las obras sonoras incluids en la experiencia hacen parte de la selección del <strong>Festival La Ilusión y son propiedad de sus autorxs</strong><br>Para escuchar las obras de manera individual o recibir más información sobre el festival, ingresa al sitio web www.lailusionfestival.com</h6></div>
-<div><h6>beta. v.h (11:47)</h6></div>
+<div><h6>beta. v.h (11:52)</h6></div>
 
 </div>
 
@@ -339,15 +339,20 @@ document.getElementById('enterBtn').addEventListener('click', async () => {
       }
     }
 
-// Botón para centrar orientación (sin mover la posición)
+// Botón para centrar orientación al horizonte
 const btnCenter = document.getElementById('btnCenter');
 if (btnCenter) {
   btnCenter.addEventListener('click', () => {
-    // Mantiene la posición actual
-    const currentPos = camera.position.clone();
-    // Reinicia la rotación mirando al horizonte hacia adelante
-    camera.rotation.set(0, 0, 0);
-    camera.lookAt(currentPos.x, currentPos.y, currentPos.z - 1);
+    // Obtiene la posición actual
+    const posY = camera.position.y;
+    const posX = camera.position.x;
+    const posZ = camera.position.z;
+
+    // Mantiene la posición actual, solo ajusta la rotación horizontal
+    camera.rotation.x = 0;  // cero pitch (mirando al horizonte)
+    camera.rotation.z = 0;  // cero roll
+    // Mantiene el yaw tal cual o lo reinicia según prefieras:
+    camera.rotation.y = 0;  // mirar hacia el "frente" del eje Z negativo
   });
 }
     // Rotar cámara con el movimiento físico del celular
