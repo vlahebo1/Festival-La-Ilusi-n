@@ -313,8 +313,14 @@ window.addEventListener('resize', ()=>{
 
 // --- Iniciar experiencia ---
 document.getElementById('enterBtn').addEventListener('click', ()=>{
-  document.getElementById('overlay').style.display='none';
-  
+  document.getElementById('overlay').style.display = 'none';
+
+  // --- Mostrar controles táctiles en móviles ---
+  if (/Mobi|Android/i.test(navigator.userAgent)) {
+    const touchControls = document.getElementById('touchControls');
+    if (touchControls) touchControls.style.display = 'flex';
+  }
+
   if (/Mobi|Android/i.test(navigator.userAgent)) {
     // --- Móviles: sin pointer lock ---
     initAudio();
@@ -390,13 +396,13 @@ if (/Mobi|Android/i.test(navigator.userAgent)) {
 
 <style>
   /* --- Estilos para los controles táctiles --- */
- #touchControls {
+#touchControls {
   position: fixed;
   bottom: 30px;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 20; /* 🔧 importante para que sea visible sobre el bosque */
-  display: none; /* Oculto por defecto, solo móviles */
+  z-index: 9999; /* 🔥 así se ve sobre el bosque */
+  display: none; /* se activa solo al entrar */
   flex-direction: column;
   align-items: center;
   gap: 10px;
