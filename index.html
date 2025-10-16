@@ -339,56 +339,45 @@ document.getElementById('enterBtn').addEventListener('click', async () => {
       }
     }
 
-// Botón para centrar orientación al horizonte
-// Offset de rotación para centrar vista horizontal y vertical
+// --- Offsets globales para centrar la vista ---
 let yawOffset = 0;
 let pitchOffset = 0;
 
+// --- Botón para centrar orientación ---
 const btnCenter = document.getElementById('btnCenter');
 if (btnCenter) {
   btnCenter.addEventListener('click', () => {
+    // Capturar la orientación actual de la cámara
     const euler = new THREE.Euler().setFromQuaternion(camera.quaternion, 'YXZ');
-    
-    // Calcular offset horizontal
-    yawOffset = -euler.y; 
-    
-    // Calcular offset vertical para nivelar la inclinación
-    pitchOffset = -euler.x; 
+    yawOffset = -euler.y;   // Centrado horizontal
+    pitchOffset = -euler.x; // Centrado vertical
   });
 }
 
-// Rotar cámara con el movimiento físico del móvil
-if (window.DeviceOrientationEvent) {
-  window.addEventListener('deviceorientation', (event) => {
-    const alpha = event.alpha ? THREE.MathUtils.degToRad(event.alpha) : 0;
-    const beta  = event.beta  ? THREE.MathUtils.degToRad(event.beta)  : 0;
-    const gamma = event.gamma ? THREE.MathUtils.degToRad(event.gamma) : 0;
+// --- Función para actualizar cámara con DeviceOrientation ---
+function updateCameraFromDeviceOrientation(event) {
+  const alpha = event.alpha ? THREE.MathUtils.degToRad(event.alpha) : 0;
+  const beta  = event.beta  ? THREE.MathUtils.degToRad(event.beta)  : 0;
+  const gamma = event.gamma ? THREE.MathUtils.degToRad(event.gamma) : 0;
 
-    const euler = new THREE.Euler(beta, alpha, -gamma, 'YXZ');
+  // Euler del dispositivo (sistema correcto para Three.js)
+  const euler = new THREE.Euler(beta, alpha, -gamma, 'YXZ');
 
-    // Aplicar offsets de centrado horizontal y vertical
-    euler.y += yawOffset;
-    euler.x += pitchOffset;
+  // Aplicar offsets para centrar la vista
+  euler.y += yawOffset;
+  euler.x += pitchOffset;
 
-    camera.quaternion.setFromEuler(euler);
-  }, true);
+  // Convertir a quaternion y aplicar a la cámara
+  camera.quaternion.setFromEuler(euler);
 }
 
+// --- Listener para rotación del dispositivo ---
+if (window.DeviceOrientationEvent) {
+  window.addEventListener('deviceorientation', updateCameraFromDeviceOrientation, true);
 } else {
   console.log("DeviceOrientation no soportado en este dispositivo.");
 }
 
-    // Iniciar experiencia móvil
-    initAudio();
-    animate();
-
-  } else {
-    // Computadores: activar control por mouse (Pointer Lock)
-    controls.lock();
-    initAudio();
-    animate();
-  }
-});
 
   // --- Controles táctiles de movimiento ---
 if (/Mobi|Android/i.test(navigator.userAgent)) {
