@@ -46,8 +46,32 @@ h6 {
     margin-bottom: 34px;
 }
 
+/* --- Estilos joystick --- */
+.joystick {
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  border: 2px solid rgba(255,255,255,0.3);
+  box-shadow: 0 0 10px rgba(0,0,0,0.5);
+  touch-action: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-
+.joystick-inner {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+  border: 2px solid rgba(255,255,255,0.6);
+  box-shadow: 0 0 6px rgba(0,0,0,0.5);
+  transform: translate(0,0);
+  transition: transform 0.05s;
+  pointer-events: none;
+}
 
 
 </style>
