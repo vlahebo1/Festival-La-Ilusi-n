@@ -56,7 +56,7 @@ h5 {
   <button id="enterBtn">Entrar al bosque</button>
 
 <div><h6>Las obras sonoras incluids en la experiencia hacen parte de la selección del <strong>Festival La Ilusión y son propiedad de sus autorxs</strong><br>Para escuchar las obras de manera individual o recibir más información sobre el festival, ingresa al sitio web www.lailusionfestival.com</h6></div>
-<div><h6>beta. v.h (mobile 3.a)</h6></div>
+<div><h6>beta. v.h (mobile 3.b)</h6></div>
 
 </div>
 
@@ -392,42 +392,6 @@ document.getElementById('enterBtn').addEventListener('click', () => {
   }
 });
   
-  
-  // --- Controles táctiles de movimiento ---
-if (/Mobi|Android/i.test(navigator.userAgent)) {
-  const btnForward = document.getElementById('btnForward');
-  const btnBack = document.getElementById('btnBack');
-  const btnLeft = document.getElementById('btnLeft');
-  const btnRight = document.getElementById('btnRight');
-
-  let move = { forward:false, back:false, left:false, right:false };
-
-  const setMove = (dir, val) => { move[dir] = val; };
-
-  // Eventos táctiles
-  btnForward.addEventListener('touchstart', ()=> setMove('forward', true));
-  btnForward.addEventListener('touchend', ()=> setMove('forward', false));
-  btnBack.addEventListener('touchstart', ()=> setMove('back', true));
-  btnBack.addEventListener('touchend', ()=> setMove('back', false));
-  btnLeft.addEventListener('touchstart', ()=> setMove('left', true));
-  btnLeft.addEventListener('touchend', ()=> setMove('left', false));
-  btnRight.addEventListener('touchstart', ()=> setMove('right', true));
-  btnRight.addEventListener('touchend', ()=> setMove('right', false));
-
-  // Actualiza cámara según movimiento
-  const originalUpdate = controls.update.bind(controls);
-  controls.update = (delta) => {
-    const speed = 3;
-    controls.velocity.set(0,0,0);
-    if (move.forward) controls.velocity.z -= speed * delta;
-    if (move.back) controls.velocity.z += speed * delta;
-    if (move.left) controls.velocity.x -= speed * delta;
-    if (move.right) controls.velocity.x += speed * delta;
-    const direction = new THREE.Vector3();
-    direction.copy(controls.velocity).applyQuaternion(camera.quaternion);
-    camera.position.add(direction);
-  };
-}
 </script>
 
 
