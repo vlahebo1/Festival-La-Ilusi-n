@@ -66,7 +66,7 @@ h6 {
   <button id="enterBtn">Entrar al bosque</button>
 
 <div><h6>Las obras sonoras incluids en la experiencia hacen parte de la selección del <strong>Festival La Ilusión y son propiedad de sus autorxs</strong><br>Para escuchar las obras de manera individual o recibir más información sobre el festival, ingresa al sitio web www.lailusionfestival.com</h6></div>
-<div><h6>beta. v.h (mobile 3.d)</h6></div>
+<div><h6>beta. v.h (mobile 3.d joystick)</h6></div>
 
 </div>
 
@@ -427,8 +427,9 @@ document.getElementById('enterBtn').addEventListener('click', () => {
     camera.lookAt(0, 1.6, 0);
 
     // Crear joysticks
-    createJoystick('30px','calc(100% - 150px)', joystickLeft);
-    createJoystick('calc(100% - 150px)','30px', joystickRight);
+   createJoystick('30px','30px', joystickLeft); // joystick izquierdo abajo
+  createJoystick('calc(100% - 150px)','30px', joystickRight); // joystick derecho abajo
+
 
     function animateMobileFPS(){
       requestAnimationFrame(animateMobileFPS);
