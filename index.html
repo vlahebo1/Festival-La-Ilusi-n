@@ -300,77 +300,43 @@ window.addEventListener('resize', ()=>{
   renderer.setSize(window.innerWidth,window.innerHeight);
 });
 
-// --- Iniciar ---
+// --- Iniciar experiencia ---
 document.getElementById('enterBtn').addEventListener('click', ()=>{
   document.getElementById('overlay').style.display='none';
-  controls.lock();
-  initAudio();
-  animate();
+  
+  if (/Mobi|Android/i.test(navigator.userAgent)) {
+    // --- Móviles: sin pointer lock ---
+    initAudio();
+    animate();
+
+    // --- Control táctil para rotar la vista ---
+    let touchX, touchY;
+    window.addEventListener('touchstart', (e) => {
+      const touch = e.touches[0];
+      touchX = touch.clientX;
+      touchY = touch.clientY;
+    });
+
+    window.addEventListener('touchmove', (e) => {
+      const touch = e.touches[0];
+      const deltaX = touch.clientX - touchX;
+      const deltaY = touch.clientY - touchY;
+      touchX = touch.clientX;
+      touchY = touch.clientY;
+
+      // Sensibilidad del giro
+      camera.rotation.y -= deltaX * 0.004;
+      camera.rotation.x -= deltaY * 0.004;
+      camera.rotation.x = Math.max(-Math.PI/2, Math.min(Math.PI/2, camera.rotation.x));
+    });
+
+  } else {
+    // --- Computador: usar pointer lock ---
+    controls.lock();
+    initAudio();
+    animate();
+  }
 });
-</script>
-
-
-  <!-- === CONTROLES TÁCTILES === -->
-<style>
-  #touchControls {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 10px;
-    z-index: 20;
-  }
-
-  #touchControls button {
-    width: 60px;
-    height: 60px;
-    border: none;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.15);
-    color: white;
-    font-size: 20px;
-    backdrop-filter: blur(6px);
-  }
-
-  /* Ocultar en pantallas grandes */
-@media (hover: hover) and (pointer: fine) {
-  #touchControls { display: none; }
-}
-</style>
-
-<div id="touchControls">
-  <button id="btnUp">↑</button>
-  <div style="display:flex; gap:10px;">
-    <button id="btnLeft">←</button>
-    <button id="btnDown">↓</button>
-    <button id="btnRight">→</button>
-  </div>
-</div>
-
-<script>
-  // Esperar a que existan los controles de movimiento
-  window.addEventListener('DOMContentLoaded', () => {
-    const btnUp = document.getElementById('btnUp');
-    const btnDown = document.getElementById('btnDown');
-    const btnLeft = document.getElementById('btnLeft');
-    const btnRight = document.getElementById('btnRight');
-
-    function hold(button, onStart, onEnd) {
-      button.addEventListener('touchstart', e => { e.preventDefault(); onStart(); });
-      button.addEventListener('touchend', e => { e.preventDefault(); onEnd(); });
-      button.addEventListener('mousedown', e => { e.preventDefault(); onStart(); });
-      button.addEventListener('mouseup', e => { e.preventDefault(); onEnd(); });
-      button.addEventListener('mouseleave', e => { e.preventDefault(); onEnd(); });
-    }
-
-    hold(btnUp, () => controls.moveForward = true, () => controls.moveForward = false);
-    hold(btnDown, () => controls.moveBackward = true, () => controls.moveBackward = false);
-    hold(btnLeft, () => controls.moveLeft = true, () => controls.moveLeft = false);
-    hold(btnRight, () => controls.moveRight = true, () => controls.moveRight = false);
-  });
 </script>
 
 
