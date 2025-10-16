@@ -56,7 +56,7 @@ h5 {
   <button id="enterBtn">Entrar al bosque</button>
 
 <div><h6>Las obras sonoras incluids en la experiencia hacen parte de la selección del <strong>Festival La Ilusión y son propiedad de sus autorxs</strong><br>Para escuchar las obras de manera individual o recibir más información sobre el festival, ingresa al sitio web www.lailusionfestival.com</h6></div>
-<div><h6>beta. v.h (mobile 1)</h6></div>
+<div><h6>beta. v.h (mobile 3)</h6></div>
 
 </div>
 
@@ -316,25 +316,93 @@ window.addEventListener('resize', ()=>{
   renderer.setSize(window.innerWidth,window.innerHeight);
 });
 
+// --- Joysticks móviles ---
+let joystickLeft = { x:0, y:0 };
+let joystickRight = { x:0, y:0 };
+
+function createJoystick(left, top, joystick) {
+  const joy = document.createElement('div');
+  joy.style.position = 'absolute';
+  joy.style.left = left;
+  joy.style.top = top;
+  joy.style.width = '100px';
+  joy.style.height = '100px';
+  joy.style.background = 'rgba(255,255,255,0.1)';
+  joy.style.borderRadius = '50%';
+  joy.style.touchAction = 'none';
+  document.body.appendChild(joy);
+
+  let active = false;
+  let origin = { x:0, y:0 };
+
+  joy.addEventListener('pointerdown', e => {
+    active = true;
+    origin.x = e.clientX;
+    origin.y = e.clientY;
+  });
+  joy.addEventListener('pointermove', e => {
+    if(!active) return;
+    joystick.x = (e.clientX - origin.x)/50;
+    joystick.y = (e.clientY - origin.y)/50;
+    joystick.x = Math.max(-1, Math.min(1, joystick.x));
+    joystick.y = Math.max(-1, Math.min(1, joystick.y));
+  });
+  joy.addEventListener('pointerup', ()=> { active=false; joystick.x=0; joystick.y=0; });
+  joy.addEventListener('pointercancel', ()=> { active=false; joystick.x=0; joystick.y=0; });
+}
+  
 // --- Iniciar experiencia ---
 document.getElementById('enterBtn').addEventListener('click', () => {
-  console.log('Botón Entrar presionado'); // Para depuración
   const overlay = document.getElementById('overlay');
   overlay.style.display = 'none';
 
   const isMobile = /Mobi|Android/i.test(navigator.userAgent);
 
-  initAudio(); // Inicializar audio
+  initAudio(); // Inicializa audio
 
-  if (isMobile) {
+  if(isMobile){
+    // Muestra controles táctiles
     document.getElementById('touchControls').style.display = 'flex';
-    animateMobileFPS(); // Animación para móvil
+
+    // Posición inicial
+    camera.position.set(0, 1.6, 10);
+    camera.lookAt(0, 1.6, 0);
+
+    // Crear joysticks
+    createJoystick('30px','calc(100% - 150px)', joystickLeft);
+    createJoystick('calc(100% - 150px)','30px', joystickRight);
+
+    // Animación móvil
+    function animateMobileFPS(){
+      requestAnimationFrame(animateMobileFPS);
+
+      const delta = 0.016;
+      const velocity = new THREE.Vector3();
+      velocity.z = -joystickLeft.y * 5 * delta;
+      velocity.x = joystickLeft.x * 5 * delta;
+
+      const direction = new THREE.Vector3();
+      direction.copy(velocity).applyQuaternion(camera.quaternion);
+      camera.position.add(direction);
+
+      // Rotación cámara
+      const euler = new THREE.Euler().setFromQuaternion(camera.quaternion, 'YXZ');
+      euler.y -= joystickRight.x * 2 * delta;
+      euler.x -= joystickRight.y * 1.5 * delta;
+      euler.x = Math.max(-Math.PI/2, Math.min(Math.PI/2, euler.x));
+      camera.quaternion.setFromEuler(euler);
+
+      renderer.render(scene, camera);
+    }
+    animateMobileFPS();
+
   } else {
-    // Desktop: solicitar PointerLock al usuario
     controls.lock();
-    animate(); // Animación para desktop
+    animate(); // Desktop
   }
 });
+  
+  
   // --- Controles táctiles de movimiento ---
 if (/Mobi|Android/i.test(navigator.userAgent)) {
   const btnForward = document.getElementById('btnForward');
