@@ -56,11 +56,11 @@ h5 {
   <button id="enterBtn">Entrar al bosque</button>
 
 <div><h6>Las obras sonoras incluids en la experiencia hacen parte de la selección del <strong>Festival La Ilusión y son propiedad de sus autorxs</strong><br>Para escuchar las obras de manera individual o recibir más información sobre el festival, ingresa al sitio web www.lailusionfestival.com</h6></div>
-<div><h6>beta. v.h (11:27)</h6></div>
+<div><h6>beta. v.h (11:35)</h6></div>
 
 </div>
 
-  <!-- Controles táctiles -->
+<!-- Controles táctiles -->
 <div id="touchControls">
   <button id="btnForward">▲</button>
   <div id="middleButtons">
@@ -68,7 +68,9 @@ h5 {
     <button id="btnBack">▼</button>
     <button id="btnRight">▶</button>
   </div>
+  <button id="btnCenter">⟳ Centrar vista</button> <!-- 🔥 NUEVO -->
 </div>
+
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js"></script>
 
@@ -337,6 +339,15 @@ document.getElementById('enterBtn').addEventListener('click', async () => {
       }
     }
 
+    // --- Botón para centrar vista ---
+const btnCenter = document.getElementById('btnCenter');
+if (btnCenter) {
+  btnCenter.addEventListener('touchstart', () => {
+    camera.position.set(0, 1.6, 0);
+    camera.lookAt(new THREE.Vector3(0, 1.6, -1));
+    camera.rotation.set(0, 0, 0);
+  });
+}
     // Rotar cámara con el movimiento físico del celular
     if (window.DeviceOrientationEvent) {
       window.addEventListener('deviceorientation', (event) => {
@@ -403,39 +414,51 @@ if (/Mobi|Android/i.test(navigator.userAgent)) {
 
 
 <style>
-  /* --- Estilos para los controles táctiles --- */
+/* --- Estilos para los controles táctiles --- */
+  
 #touchControls {
   position: fixed;
   bottom: 30px;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 9999; /* 🔥 así se ve sobre el bosque */
-  display: none; /* se activa solo al entrar */
+  z-index: 9999;
+  display: none !important;
   flex-direction: column;
   align-items: center;
   gap: 10px;
 }
 
-  #touchControls button {
-    background: rgba(255,255,255,0.2);
-    border: 1px solid rgba(255,255,255,0.4);
-    color: white;
-    font-size: 24px;
-    padding: 10px 18px;
-    border-radius: 10px;
-    backdrop-filter: blur(4px);
-    user-select: none;
-  }
+#touchControls button {
+  background: rgba(255,255,255,0.2);
+  border: 1px solid rgba(255,255,255,0.4);
+  color: white;
+  font-size: 18px;
+  padding: 8px 14px;
+  border-radius: 10px;
+  backdrop-filter: blur(4px);
+  user-select: none;
+}
 
-  #middleButtons {
-    display: flex;
-    gap: 16px;
-  }
+#middleButtons {
+  display: flex;
+  gap: 16px;
+}
 
-  /* Mostrar solo en pantallas pequeñas */
-  @media (max-width: 768px) {
-    #touchControls { display: flex; }
+/* Botón "Centrar vista" un poco más pequeño */
+#btnCenter {
+  font-size: 16px;
+  padding: 6px 12px;
+  margin-top: 6px;
+  opacity: 0.8;
+}
+
+/* Mostrar solo en pantallas pequeñas */
+@media (max-width: 768px) {
+  #touchControls {
+    display: flex !important;
   }
+}
+
 </style>
 
   
