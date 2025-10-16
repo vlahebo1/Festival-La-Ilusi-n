@@ -56,7 +56,7 @@ h5 {
   <button id="enterBtn">Entrar al bosque</button>
 
 <div><h6>Las obras sonoras incluids en la experiencia hacen parte de la selección del <strong>Festival La Ilusión y son propiedad de sus autorxs</strong><br>Para escuchar las obras de manera individual o recibir más información sobre el festival, ingresa al sitio web www.lailusionfestival.com</h6></div>
-<div><h6>beta. v.h (11:57)</h6></div>
+<div><h6>beta. v.h (12:01)</h6></div>
 
 </div>
 
@@ -343,14 +343,14 @@ document.getElementById('enterBtn').addEventListener('click', async () => {
 const btnCenter = document.getElementById('btnCenter');
 if (btnCenter) {
   btnCenter.addEventListener('click', () => {
-    // Obtener la rotación actual como Euler
+    // Obtener rotación actual como Euler
     const euler = new THREE.Euler().setFromQuaternion(camera.quaternion, 'YXZ');
 
-    // Resetear solo pitch (x) y roll (z) para mirar al horizonte
-    euler.x = 0; // pitch: mirar al frente horizontal
-    euler.z = 0; // roll: nivelar la cámara
+    // Nivelar cámara: pitch y roll = 0
+    euler.x = 0; // mirar al frente horizontal
+    euler.z = 0; // nivelar la cámara
 
-    // Aplicar la nueva rotación
+    // Aplicar la rotación ajustada
     camera.quaternion.setFromEuler(euler);
   });
 }
