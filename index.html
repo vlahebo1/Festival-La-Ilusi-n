@@ -56,7 +56,7 @@ h5 {
   <button id="enterBtn">Entrar al bosque</button>
 
 <div><h6>Las obras sonoras incluids en la experiencia hacen parte de la selección del <strong>Festival La Ilusión y son propiedad de sus autorxs</strong><br>Para escuchar las obras de manera individual o recibir más información sobre el festival, ingresa al sitio web www.lailusionfestival.com</h6></div>
-<div><h6>beta. v.h (12:40)</h6></div>
+<div><h6>beta. v.h (mobile)</h6></div>
 
 </div>
 
@@ -324,63 +324,112 @@ document.getElementById('enterBtn').addEventListener('click', async () => {
   const touchControls = document.getElementById('touchControls');
 
     if (isMobile) {
-  if (touchControls) touchControls.style.display = 'flex';
 
-  // Pedir permiso de orientación en iOS
-  if (typeof DeviceOrientationEvent.requestPermission === 'function') {
-    try {
-      const response = await DeviceOrientationEvent.requestPermission();
-      if (response !== 'granted') {
-        alert('Para rotar la vista con el movimiento del dispositivo, activa el permiso de orientación.');
-      }
-    } catch (err) { console.error(err); }
-  }
-
-  // Offsets iniciales para centrar la vista
-  let yawOffset = 0;
-  let pitchOffset = 0;
-  let initialOrientationSet = false;
-
-  function updateCameraFromDeviceOrientation(event) {
-    let alpha = event.alpha ? THREE.MathUtils.degToRad(event.alpha) : 0;
-    let beta  = event.beta  ? THREE.MathUtils.degToRad(event.beta)  : 0;
-    let gamma = event.gamma ? THREE.MathUtils.degToRad(event.gamma) : 0;
-
-    const euler = new THREE.Euler(beta, alpha, -gamma, 'YXZ');
-
-    // Aplicar offsets solo una vez al inicio para nivelar la cámara
-    if (!initialOrientationSet) {
-      pitchOffset = -euler.x; // Nivelar vertical
-      yawOffset   = 0;         // Mantener frente hacia Z negativo
-      initialOrientationSet = true;
     }
 
-    euler.x += pitchOffset;
-    euler.y += yawOffset;
 
-    camera.quaternion.setFromEuler(euler);
-  }
+ // --- Variables de joysticks ---
+    const joystickLeft = { base:null, knob:null, x:0, y:0, active:false };
+    const joystickRight = { base:null, knob:null, x:0, y:0, active:false };
 
-  if (window.DeviceOrientationEvent) {
-    window.addEventListener('deviceorientation', updateCameraFromDeviceOrientation, true);
-  }
+    function createJoystick(left, bottom, joystickObj){
+      // Base
+      joystickObj.base = document.createElement('div');
+      joystickObj.base.style.position = 'fixed';
+      joystickObj.base.style.left = left;
+      joystickObj.base.style.bottom = bottom;
+      joystickObj.base.style.width = '120px';
+      joystickObj.base.style.height = '120px';
+      joystickObj.base.style.background = 'rgba(255,255,255,0.1)';
+      joystickObj.base.style.border = '2px solid rgba(255,255,255,0.4)';
+      joystickObj.base.style.borderRadius = '50%';
+      joystickObj.base.style.touchAction = 'none';
+      joystickObj.base.style.zIndex = '9999';
+      document.body.appendChild(joystickObj.base);
 
-  // Botón para centrar vista horizontal durante la experiencia
-  const btnCenter = document.getElementById('btnCenter');
-  if (btnCenter) {
-    btnCenter.addEventListener('click', () => {
-      const euler = new THREE.Euler().setFromQuaternion(camera.quaternion, 'YXZ');
-      euler.x = 0;
-      euler.z = 0;
-      camera.quaternion.setFromEuler(euler);
-    });
-  }
+      // Knob
+      joystickObj.knob = document.createElement('div');
+      joystickObj.knob.style.position = 'absolute';
+      joystickObj.knob.style.width = '60px';
+      joystickObj.knob.style.height = '60px';
+      joystickObj.knob.style.background = 'rgba(255,255,255,0.4)';
+      joystickObj.knob.style.borderRadius = '50%';
+      joystickObj.knob.style.left = '30px';
+      joystickObj.knob.style.top = '30px';
+      joystickObj.knob.style.transition = '0.1s';
+      joystickObj.base.appendChild(joystickObj.knob);
 
-  // Iniciar audio y animación
-  initAudio();
-  animate();
+      // Eventos
+      joystickObj.base.addEventListener('pointerdown', (e) => { joystickObj.active = true; updateKnob(e, joystickObj); });
+      window.addEventListener('pointermove', (e) => { if(joystickObj.active) updateKnob(e, joystickObj); });
+      window.addEventListener('pointerup', () => { joystickObj.active = false; joystickObj.x = 0; joystickObj.y = 0; joystickObj.knob.style.left='30px'; joystickObj.knob.style.top='30px'; });
+    }
 
-  } else {
+    function updateKnob(e, joystickObj){
+      const rect = joystickObj.base.getBoundingClientRect();
+      const centerX = rect.left + rect.width/2;
+      const centerY = rect.top + rect.height/2;
+      const dx = e.clientX - centerX;
+      const dy = e.clientY - centerY;
+      const maxDistance = rect.width/2 - 30;
+      let distance = Math.sqrt(dx*dx + dy*dy);
+      if(distance > maxDistance){
+        const angle = Math.atan2(dy, dx);
+        joystickObj.x = Math.cos(angle);
+        joystickObj.y = Math.sin(angle);
+        joystickObj.knob.style.left = `${50 + joystickObj.x*maxDistance}px`;
+        joystickObj.knob.style.top = `${50 + joystickObj.y*maxDistance}px`;
+      } else {
+        joystickObj.x = dx/maxDistance;
+        joystickObj.y = dy/maxDistance;
+        joystickObj.knob.style.left = `${50 + dx}px`;
+        joystickObj.knob.style.top = `${50 + dy}px`;
+      }
+    }
+
+    // Crear joysticks: izquierdo (movimiento), derecho (mirada)
+    createJoystick('30px', '30px', joystickLeft);
+    createJoystick('calc(100% - 150px)', '30px', joystickRight);
+
+    // Animación móvil
+    function animateMobileFPS(){
+      requestAnimationFrame(animateMobileFPS);
+      const delta = 0.016;
+
+      // --- Movimiento ---
+      const velocity = new THREE.Vector3();
+      velocity.z = -joystickLeft.y * 5 * delta;
+      velocity.x = joystickLeft.x * 5 * delta;
+      const direction = new THREE.Vector3();
+      direction.copy(velocity).applyQuaternion(camera.quaternion);
+      camera.position.add(direction);
+
+      // --- Rotación cámara ---
+      camera.rotation.y -= joystickRight.x * 2 * delta; // horizontal
+      camera.rotation.x -= joystickRight.y * 1.5 * delta; // vertical
+      camera.rotation.x = Math.max(-Math.PI/2, Math.min(Math.PI/2, camera.rotation.x)); // limitar vertical
+
+      renderer.render(scene, camera);
+    }
+
+    // Botón centrar vista horizontal
+    const btnCenter = document.getElementById('btnCenter');
+    if(btnCenter){
+      btnCenter.addEventListener('click', () => {
+        const euler = new THREE.Euler().setFromQuaternion(camera.quaternion,'YXZ');
+        euler.x = 0;
+        euler.z = 0;
+        camera.quaternion.setFromEuler(euler);
+      });
+    }
+
+    initAudio();
+    animateMobileFPS();
+
+  } 
+
+      
+  else {
     // Computadores: activar control por mouse (Pointer Lock)
     controls.lock();
     initAudio();
