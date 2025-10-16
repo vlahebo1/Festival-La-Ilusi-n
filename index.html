@@ -56,7 +56,7 @@ h5 {
   <button id="enterBtn">Entrar al bosque</button>
 
 <div><h6>Las obras sonoras incluids en la experiencia hacen parte de la selección del <strong>Festival La Ilusión y son propiedad de sus autorxs</strong><br>Para escuchar las obras de manera individual o recibir más información sobre el festival, ingresa al sitio web www.lailusionfestival.com</h6></div>
-<div><h6>beta. v.h (11:40)</h6></div>
+<div><h6>beta. v.h (11:43)</h6></div>
 
 </div>
 
@@ -422,7 +422,7 @@ if (/Mobi|Android/i.test(navigator.userAgent)) {
   left: 50%;
   transform: translateX(-50%);
   z-index: 9999;
-  display: none !important;
+  display: none;
   flex-direction: column;
   align-items: center;
   gap: 10px;
@@ -455,7 +455,7 @@ if (/Mobi|Android/i.test(navigator.userAgent)) {
 /* Mostrar solo en pantallas pequeñas */
 @media (max-width: 768px) {
  #touchControls {
-  display: none;
+  display: flex;
 }
 }
 
