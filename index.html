@@ -56,7 +56,7 @@ h5 {
   <button id="enterBtn">Entrar al bosque</button>
 
 <div><h6>Las obras sonoras incluids en la experiencia hacen parte de la selección del <strong>Festival La Ilusión y son propiedad de sus autorxs</strong><br>Para escuchar las obras de manera individual o recibir más información sobre el festival, ingresa al sitio web www.lailusionfestival.com</h6></div>
-<div><h6>beta. v.h (12:05)</h6></div>
+<div><h6>beta. v.h (12:08)</h6></div>
 
 </div>
 
@@ -375,19 +375,26 @@ if (window.DeviceOrientationEvent) {
 
 
     
-    // Rotar cámara con el movimiento físico del celular
-    if (window.DeviceOrientationEvent) {
-      window.addEventListener('deviceorientation', (event) => {
-        const alpha = event.alpha ? THREE.MathUtils.degToRad(event.alpha) : 0;
-        const beta  = event.beta  ? THREE.MathUtils.degToRad(event.beta)  : 0;
-        const gamma = event.gamma ? THREE.MathUtils.degToRad(event.gamma) : 0;
+   // Rotar cámara con el movimiento físico del celular + offset
+if (window.DeviceOrientationEvent) {
+  window.addEventListener('deviceorientation', (event) => {
+    let alpha = event.alpha ? THREE.MathUtils.degToRad(event.alpha) : 0;
+    let beta  = event.beta  ? THREE.MathUtils.degToRad(event.beta)  : 0;
+    let gamma = event.gamma ? THREE.MathUtils.degToRad(event.gamma) : 0;
 
-        const euler = new THREE.Euler(beta, alpha, -gamma, 'YXZ');
-        camera.quaternion.setFromEuler(euler);
-      }, true);
-    } else {
-      console.log("DeviceOrientation no soportado en este dispositivo.");
-    }
+    // Euler según DeviceOrientation
+    const euler = new THREE.Euler(beta, alpha, -gamma, 'YXZ');
+
+    // Aplica el offset de yaw para centrar la vista
+    euler.y += yawOffset;
+
+    // Nivelar la vista para que el horizonte quede al frente cuando el móvil esté inclinado
+    // Esto asegura que mirar al frente coincida con la posición horizontal natural
+    camera.quaternion.setFromEuler(euler);
+  }, true);
+} else {
+  console.log("DeviceOrientation no soportado en este dispositivo.");
+}
 
     // Iniciar experiencia móvil
     initAudio();
