@@ -308,5 +308,87 @@ document.getElementById('enterBtn').addEventListener('click', ()=>{
   animate();
 });
 </script>
+
+  <!-- Controles táctiles -->
+<div id="touch-controls">
+  <button class="ctrl" id="up">▲</button>
+  <div class="middle-row">
+    <button class="ctrl" id="left">◀</button>
+    <button class="ctrl" id="center">🜂</button>
+    <button class="ctrl" id="right">▶</button>
+  </div>
+  <button class="ctrl" id="down">▼</button>
+</div>
+
+<style>
+#touch-controls {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 20;
+  user-select: none;
+}
+
+.middle-row {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin: 8px 0;
+}
+
+.ctrl {
+  width: 60px;
+  height: 60px;
+  font-size: 24px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255,255,255,0.15);
+  color: #fff;
+  backdrop-filter: blur(5px);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.ctrl:active {
+  background: rgba(16,185,129,0.6);
+}
+@media (min-width: 768px) {
+  #touch-controls { display: none; } /* Ocultar en pantallas grandes */
+}
+</style>
+
+<script>
+// --- Controles táctiles ---
+const touchMap = {
+  up: 'KeyW',
+  down: 'KeyS',
+  left: 'KeyA',
+  right: 'KeyD'
+};
+
+Object.keys(touchMap).forEach(id => {
+  const btn = document.getElementById(id);
+  btn.addEventListener('touchstart', e => {
+    e.preventDefault();
+    document.dispatchEvent(new KeyboardEvent('keydown', { code: touchMap[id] }));
+  });
+  btn.addEventListener('touchend', e => {
+    e.preventDefault();
+    document.dispatchEvent(new KeyboardEvent('keyup', { code: touchMap[id] }));
+  });
+});
+
+// Botón central: activar o salir del modo inmersivo
+document.getElementById('center').addEventListener('click', () => {
+  if (!controls.isLocked) {
+    controls.lock();
+  } else {
+    document.exitPointerLock();
+  }
+});
+</script>
+
 </body>
 </html>
