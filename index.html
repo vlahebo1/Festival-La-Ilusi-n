@@ -49,6 +49,10 @@ h5 {
 <body>
 
 <div id="overlay">
+
+
+
+  
   <div><h3><center><strong>Festival La Ilusión | Escuchar el bosque</strong></center></h3></div>
   <div><h5>||| La experiencia inmersiva solo es posible si usas audifonos |||</center></h5></div>
  <div class="texto-intro">Camina por el bosque usando las teclas W, A, S, D y tu mouse, cada esfera entre los árboles reproduce una obra sonora del Festival La Ilusión. Para salir de la experiencia presiona la tecla [ESC]<br></center></div>
@@ -56,10 +60,27 @@ h5 {
   <button id="enterBtn">Entrar al bosque</button>
 
 <div><h6>Las obras sonoras incluids en la experiencia hacen parte de la selección del <strong>Festival La Ilusión y son propiedad de sus autorxs</strong><br>Para escuchar las obras de manera individual o recibir más información sobre el festival, ingresa al sitio web www.lailusionfestival.com</h6></div>
-<div><h6>beta. v.h (mobile 3.b)</h6></div>
+<div><h6>beta. v.h (mobile 3.c)</h6></div>
 
 </div>
 
+  <div id="rotateOverlay" style="
+  display:none;
+  position:fixed;
+  top:0; left:0;
+  width:100%; height:100%;
+  background:rgba(0,0,0,0.9);
+  color:white;
+  font-family:sans-serif;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index: 9999;
+  text-align:center;
+  padding:20px;
+">
+  <h2>Por favor gira tu dispositivo a modo horizontal para continuar</h2>
+</div>
 
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js"></script>
@@ -340,18 +361,43 @@ function createJoystick(left, top, joystick) {
   joy.addEventListener('pointerup', ()=> { active=false; joystick.x=0; joystick.y=0; });
   joy.addEventListener('pointercancel', ()=> { active=false; joystick.x=0; joystick.y=0; });
 }
+
+function checkOrientation(){
+  const rotateOverlay = document.getElementById('rotateOverlay');
+  if(window.innerHeight > window.innerWidth){
+    rotateOverlay.style.display = 'flex'; // Mostrar aviso si vertical
+    return false;
+  } else {
+    rotateOverlay.style.display = 'none';
+    return true;
+  }
+}
+
+function requestFullscreen(){
+  const el = document.documentElement;
+  if(el.requestFullscreen) el.requestFullscreen();
+  else if(el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+  else if(el.msRequestFullscreen) el.msRequestFullscreen();
+}
+
+// Detectar cambios de orientación mientras está abierta la experiencia
+window.addEventListener('resize', checkOrientation);
+window.addEventListener('orientationchange', checkOrientation);
+
+
   
 // --- Iniciar experiencia ---
 document.getElementById('enterBtn').addEventListener('click', () => {
+  if(!checkOrientation()) return; // No iniciar si vertical
+  requestFullscreen(); // Pedir pantalla completa
+
   const overlay = document.getElementById('overlay');
   overlay.style.display = 'none';
 
   const isMobile = /Mobi|Android/i.test(navigator.userAgent);
-
-  initAudio(); // Inicializa audio
+  initAudio(); 
 
   if(isMobile){
-  
     // Posición inicial
     camera.position.set(0, 1.6, 10);
     camera.lookAt(0, 1.6, 0);
@@ -360,33 +406,26 @@ document.getElementById('enterBtn').addEventListener('click', () => {
     createJoystick('30px','calc(100% - 150px)', joystickLeft);
     createJoystick('calc(100% - 150px)','30px', joystickRight);
 
-    // Animación móvil
     function animateMobileFPS(){
       requestAnimationFrame(animateMobileFPS);
-
       const delta = 0.016;
       const velocity = new THREE.Vector3();
       velocity.z = -joystickLeft.y * 5 * delta;
       velocity.x = joystickLeft.x * 5 * delta;
-
       const direction = new THREE.Vector3();
       direction.copy(velocity).applyQuaternion(camera.quaternion);
       camera.position.add(direction);
-
-      // Rotación cámara
       const euler = new THREE.Euler().setFromQuaternion(camera.quaternion, 'YXZ');
       euler.y -= joystickRight.x * 2 * delta;
       euler.x -= joystickRight.y * 1.5 * delta;
       euler.x = Math.max(-Math.PI/2, Math.min(Math.PI/2, euler.x));
       camera.quaternion.setFromEuler(euler);
-
       renderer.render(scene, camera);
     }
     animateMobileFPS();
-
   } else {
     controls.lock();
-    animate(); // Desktop
+    animate();
   }
 });
   
