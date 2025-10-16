@@ -56,7 +56,7 @@ h5 {
   <button id="enterBtn">Entrar al bosque</button>
 
 <div><h6>Las obras sonoras incluids en la experiencia hacen parte de la selección del <strong>Festival La Ilusión y son propiedad de sus autorxs</strong><br>Para escuchar las obras de manera individual o recibir más información sobre el festival, ingresa al sitio web www.lailusionfestival.com</h6></div>
-<div><h6>beta. v.h</h6></div>
+<div><h6>beta. v.h.1</h6></div>
 
 </div>
 
@@ -390,17 +390,17 @@ if (/Mobi|Android/i.test(navigator.userAgent)) {
 
 <style>
   /* --- Estilos para los controles táctiles --- */
-  #touchControls {
-    position: fixed;
-    bottom: 30px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 10;
-    display: none; /* Oculto por defecto, solo móviles */
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-  }
+ #touchControls {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20; /* 🔧 importante para que sea visible sobre el bosque */
+  display: none; /* Oculto por defecto, solo móviles */
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
 
   #touchControls button {
     background: rgba(255,255,255,0.2);
