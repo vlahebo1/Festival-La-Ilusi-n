@@ -90,7 +90,7 @@ h6 {
   <button id="enterBtn">Entrar al bosque</button>
 
 <div><h6>Las obras sonoras incluids en la experiencia hacen parte de la selección del <strong>Festival La Ilusión y son propiedad de sus autorxs</strong><br>Para escuchar las obras de manera individual o recibir más información sobre el festival, ingresa al sitio web www.lailusionfestival.com</h6></div>
-<div><h6>beta. v.h (mobile 3.d joystick)</h6></div>
+<div><h6>beta. v.h (mobile 3.d ++)</h6></div>
 
 </div>
 
@@ -361,16 +361,16 @@ window.addEventListener('resize', ()=>{
 let joystickLeft = { x:0, y:0 };
 let joystickRight = { x:0, y:0 };
 
-function createJoystick(left, top, joystick) {
+function createJoystick(left, bottom, joystick) {
   const joy = document.createElement('div');
-  joy.style.position = 'absolute';
+  joy.classList.add('joystick');
   joy.style.left = left;
-  joy.style.top = top;
-  joy.style.width = '100px';
-  joy.style.height = '100px';
-  joy.style.background = 'rgba(255,255,255,0.1)';
-  joy.style.borderRadius = '50%';
-  joy.style.touchAction = 'none';
+  joy.style.bottom = bottom;
+
+  const inner = document.createElement('div');
+  inner.classList.add('joystick-inner');
+  joy.appendChild(inner);
+
   document.body.appendChild(joy);
 
   let active = false;
@@ -381,16 +381,29 @@ function createJoystick(left, top, joystick) {
     origin.x = e.clientX;
     origin.y = e.clientY;
   });
+
   joy.addEventListener('pointermove', e => {
     if(!active) return;
     joystick.x = (e.clientX - origin.x)/50;
     joystick.y = (e.clientY - origin.y)/50;
     joystick.x = Math.max(-1, Math.min(1, joystick.x));
     joystick.y = Math.max(-1, Math.min(1, joystick.y));
+
+    inner.style.transform = `translate(${joystick.x*40}px, ${joystick.y*40}px)`;
   });
-  joy.addEventListener('pointerup', ()=> { active=false; joystick.x=0; joystick.y=0; });
-  joy.addEventListener('pointercancel', ()=> { active=false; joystick.x=0; joystick.y=0; });
+
+  joy.addEventListener('pointerup', ()=> {
+    active = false;
+    joystick.x=0; joystick.y=0;
+    inner.style.transform = `translate(0,0)`;
+  });
+  joy.addEventListener('pointercancel', ()=> {
+    active = false;
+    joystick.x=0; joystick.y=0;
+    inner.style.transform = `translate(0,0)`;
+  });
 }
+
 
 function checkOrientation(){
   const rotateOverlay = document.getElementById('rotateOverlay');
@@ -451,9 +464,8 @@ document.getElementById('enterBtn').addEventListener('click', () => {
     camera.lookAt(0, 1.6, 0);
 
     // Crear joysticks
-   createJoystick('30px','30px', joystickLeft); // joystick izquierdo abajo
-  createJoystick('calc(100% - 150px)','30px', joystickRight); // joystick derecho abajo
-
+createJoystick('30px','30px', joystickLeft); // izquierdo abajo
+createJoystick('calc(100% - 150px)','30px', joystickRight); // derecho abajo
 
     function animateMobileFPS(){
       requestAnimationFrame(animateMobileFPS);
