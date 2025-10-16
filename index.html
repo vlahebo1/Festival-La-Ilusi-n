@@ -11,48 +11,53 @@
     display:flex; align-items:center; justify-content:center;
     background: rgba(0,0,0,0.85); color:#fff; font-family:sans-serif;
     flex-direction:column; z-index: 10;
-    text-align: center;
   }
   #overlay button {
     padding:12px 24px; font-size:18px; cursor:pointer; margin-top:16px;
     border:none; border-radius:8px; background:#10b981; color:#fff;
   }
-  h6 {
-    font-family: monospace; font-size: 12px;
-    max-width: 270px; margin-top: 20px;
-  }
-  h5 { max-width: 378px; margin-top: -8px; }
-  .texto-intro { max-width: 371px; margin-bottom: 34px; }
-  /* Controles táctiles */
-  #touchControls {
-    position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
-    z-index: 9999; display: none; flex-direction: column; align-items: center; gap: 10px;
-  }
-  #touchControls button {
-    background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4);
-    color: white; font-size: 18px; padding: 8px 14px; border-radius: 10px;
-    backdrop-filter: blur(4px); user-select: none;
-  }
-  #middleButtons { display:flex; gap:16px; }
-  #btnCenter { font-size:16px; padding:6px 12px; margin-top:6px; opacity:0.8; }
-  @media(max-width:768px){#touchControls{display:flex;}}
+
+h6 {
+    font-family: monospace;
+    text-align: center;
+    font-size: 12px;
+    font-weight: unset;
+    max-width: 270px;
+    margin-top: 54px;
+}
+
+h5 {
+    max-width: 378px;
+    text-align: center;
+    font-weight: unset;
+    margin-top: -16px;
+}
+
+.texto-intro {
+    max-width: 371px;
+    text-align: center;
+    font-weight: unset;
+    margin-bottom: 34px;
+}
+
+
+
+
+
 </style>
 </head>
 <body>
 
 <div id="overlay">
-  <h3><strong>Festival La Ilusión | Escuchar el bosque</strong></h3>
-  <h5>||| La experiencia inmersiva solo es posible si usas audífonos |||</h5>
-  <div class="texto-intro">
-    Camina por el bosque usando las teclas W, A, S, D y tu mouse. 
-    Cada esfera entre los árboles reproduce una obra sonora del Festival La Ilusión. 
-    Para salir de la experiencia presiona la tecla [ESC].
-  </div>
+  <div><h3><center><strong>Festival La Ilusión | Escuchar el bosque</strong></h3></div>
+  <div><h5>||| La experiencia inmersiva solo es posible si usas audifonos |||</h5></center></div>
+ <div class="texto-intro">Camina por el bosque usando las teclas W, A, S, D y tu mouse, cada esfera entre los árboles reproduce una obra sonora del Festival La Ilusión. Para salir de la experiencia presiona la tecla [ESC]<br></center></div>
+<div></div>
   <button id="enterBtn">Entrar al bosque</button>
-  <h6>Las obras sonoras incluidas en la experiencia hacen parte de la selección del <strong>Festival La Ilusión y son propiedad de sus autorxs</strong>.<br>
-      Para escuchar las obras de manera individual o recibir más información, visita <a href="https://www.lailusionfestival.com" target="_blank" style="color:#10b981;">www.lailusionfestival.com</a>
-  </h6>
-  <h6>beta. v.h (12:24)</h6>
+
+<div><h6>Las obras sonoras incluids en la experiencia hacen parte de la selección del <strong>Festival La Ilusión y son propiedad de sus autorxs</strong><br>Para escuchar las obras de manera individual o recibir más información sobre el festival, ingresa al sitio web www.lailusionfestival.com</h6></div>
+<div><h6>beta. v.h (12:01)</h6></div>
+
 </div>
 
 <!-- Controles táctiles -->
@@ -63,56 +68,42 @@
     <button id="btnBack">▼</button>
     <button id="btnRight">▶</button>
   </div>
-  <button id="btnCenter">⟳ Centrar vista</button>
+  <button id="btnCenter">⟳ Centrar vista</button> <!-- 🔥 NUEVO -->
 </div>
+
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js"></script>
 
 <script>
-// --- Variables globales ---
-const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x000000);
-
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 3000);
-camera.position.set(0,1.6,0);
-
-const renderer = new THREE.WebGLRenderer({antialias:true});
-renderer.setSize(window.innerWidth,window.innerHeight);
-document.body.appendChild(renderer.domElement);
-
-// --- Luz ---
-scene.add(new THREE.AmbientLight(0xffffff,0.6));
-const dirLight = new THREE.DirectionalLight(0xffffff,0.8);
-dirLight.position.set(10,20,10);
-scene.add(dirLight);
-
 // --- PointerLockControls ---
 class PointerLockControls {
-  constructor(camera, domElement){
+  constructor(camera, domElement) {
     this.camera = camera;
     this.domElement = domElement;
     this.isLocked = false;
     this.euler = new THREE.Euler(0,0,0,'YXZ');
     this.PI_2 = Math.PI/2;
-    this.domElement.addEventListener('click',()=>this.lock());
-    document.addEventListener('pointerlockchange',()=>this.isLocked=document.pointerLockElement===this.domElement);
-    this.domElement.addEventListener('mousemove', e=>{
-      if(!this.isLocked) return;
-      const movementX = e.movementX || 0;
-      const movementY = e.movementY || 0;
+    this.domElement.addEventListener('click', () => this.lock(), false);
+    document.addEventListener('pointerlockchange', () => {
+      this.isLocked = document.pointerLockElement === this.domElement;
+    });
+    this.domElement.addEventListener('mousemove', (event) => {
+      if (!this.isLocked) return;
+      const movementX = event.movementX || 0;
+      const movementY = event.movementY || 0;
       this.euler.setFromQuaternion(this.camera.quaternion);
       this.euler.y -= movementX * 0.002;
       this.euler.x -= movementY * 0.002;
       this.euler.x = Math.max(-this.PI_2, Math.min(this.PI_2, this.euler.x));
       this.camera.quaternion.setFromEuler(this.euler);
-    });
-    this.moveForward=this.moveBackward=this.moveLeft=this.moveRight=false;
-    document.addEventListener('keydown', e=>this.onKey(e,true));
-    document.addEventListener('keyup', e=>this.onKey(e,false));
+    }, false);
+    this.moveForward = this.moveBackward = this.moveLeft = this.moveRight = false;
+    document.addEventListener('keydown', (e) => this.onKey(e,true));
+    document.addEventListener('keyup', (e) => this.onKey(e,false));
     this.velocity = new THREE.Vector3();
   }
-  lock(){ this.domElement.requestPointerLock(); }
-  onKey(e, down){
+  lock() { this.domElement.requestPointerLock(); }
+  onKey(e, down) {
     switch(e.code){
       case 'KeyW': this.moveForward=down; break;
       case 'KeyS': this.moveBackward=down; break;
@@ -120,120 +111,200 @@ class PointerLockControls {
       case 'KeyD': this.moveRight=down; break;
     }
   }
-  update(delta){
-    const speed=5;
+  update(delta) {
+    const speed = 5;
     this.velocity.set(0,0,0);
-    if(this.moveForward) this.velocity.z-=speed*delta;
-    if(this.moveBackward) this.velocity.z+=speed*delta;
-    if(this.moveLeft) this.velocity.x-=speed*delta;
-    if(this.moveRight) this.velocity.x+=speed*delta;
+    if(this.moveForward) this.velocity.z -= speed*delta;
+    if(this.moveBackward) this.velocity.z += speed*delta;
+    if(this.moveLeft) this.velocity.x -= speed*delta;
+    if(this.moveRight) this.velocity.x += speed*delta;
     const direction = new THREE.Vector3();
     direction.copy(this.velocity).applyQuaternion(this.camera.quaternion);
     this.camera.position.add(direction);
   }
 }
-const controls = new PointerLockControls(camera, renderer.domElement);
 
-// --- Árboles deformes ---
+// --- Escena base ---
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x000000);
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 3000);
+const renderer = new THREE.WebGLRenderer({antialias:true});
+renderer.setSize(window.innerWidth,window.innerHeight);
+document.body.appendChild(renderer.domElement);
+camera.position.set(0, 1.6, 0);
+camera.lookAt(new THREE.Vector3(0, 1.6, -1));
+
+
+// --- Luz ambiental ---
+scene.add(new THREE.AmbientLight(0xffffff,0.6));
+const dirLight = new THREE.DirectionalLight(0xffffff,0.8);
+dirLight.position.set(10,20,10);
+scene.add(dirLight);
+
+// --- Árboles deformes y asimétricos ---
 function createDeformedTree(x,z){
-  const scale=Math.random()*1.5+0.5;
-  const segments=6+Math.floor(Math.random()*6);
-  const trunkGeo = new THREE.CylinderGeometry(0.05*scale,0.3*scale,2.2*scale,segments,1);
-  if(trunkGeo.vertices) trunkGeo.vertices.forEach(v=>{v.x+=(Math.random()-0.5)*0.3; v.z+=(Math.random()-0.5)*0.3;});
-  const trunkMat = new THREE.MeshStandardMaterial({color:0x002a00, wireframe:Math.random()<0.3});
+  const scale = Math.random()*1.5+0.5;
+  const segments = 6 + Math.floor(Math.random()*6);
+  const trunkGeo = new THREE.CylinderGeometry(
+    0.05*scale, 0.3*scale, 2.2*scale, segments, 1
+  );
+  trunkGeo.vertices?.forEach(v=>{
+    v.x += (Math.random()-0.5)*0.3;
+    v.z += (Math.random()-0.5)*0.3;
+  });
+  const trunkMat = new THREE.MeshStandardMaterial({
+    color:0x002a00,
+    wireframe:Math.random()<0.3
+  });
   const trunk = new THREE.Mesh(trunkGeo,trunkMat);
-  trunk.position.set(x,scale,z); trunk.rotation.y = Math.random()*Math.PI*2;
+  trunk.position.set(x,scale,z);
+  trunk.rotation.y = Math.random()*Math.PI*2;
   scene.add(trunk);
+
   const crownGeo = new THREE.DodecahedronGeometry(1.2*scale,0);
-  const crownMat = new THREE.MeshStandardMaterial({color:0x0a5e05, wireframe:Math.random()<0.2});
+  const crownMat = new THREE.MeshStandardMaterial({
+    color:0x0a5e05,
+    wireframe:Math.random()<0.2
+  });
   const crown = new THREE.Mesh(crownGeo,crownMat);
   crown.position.set(x,2.4*scale,z);
   crown.scale.set(Math.random()*1.3+0.7, Math.random()*1.8+0.4, Math.random()*1.3+0.7);
   scene.add(crown);
 }
-// Capas de árboles
-for(let i=0;i<400;i++) createDeformedTree(Math.random()*600-300, Math.random()*600-300);
+
+// --- Capa densa de árboles deformes ---
+for(let i=0;i<400;i++){
+  const x = Math.random()*600 -300;
+  const z = Math.random()*600 -300;
+  createDeformedTree(x,z);
+}
+
+// --- Capa espesa de árboles vectoriales abstractos ---
+for(let i=0;i<250;i++){
+  const shape = new THREE.Shape();
+  let x = 0, y = 0;
+  shape.moveTo(x,y);
+  for(let j=0;j<5+Math.random()*10;j++){
+    x += (Math.random()-0.5)*2;
+    y += (Math.random()*2);
+    shape.lineTo(x,y);
+  }
+  const geo = new THREE.ShapeGeometry(shape);
+  const mat = new THREE.MeshBasicMaterial({
+    color: new THREE.Color(`hsl(${Math.random()*120}, 50%, 30%)`),
+    wireframe:true
+  });
+  const mesh = new THREE.Mesh(geo,mat);
+  mesh.position.set(Math.random()*600-300, 0, Math.random()*600-300);
+  mesh.rotation.y = Math.random()*Math.PI*2;
+  mesh.scale.setScalar(Math.random()*3+1);
+  scene.add(mesh);
+}
+
+// --- Árboles extremadamente altos ---
 for(let i=0;i<60;i++){
-  const x=Math.random()*600-300, z=Math.random()*600-300, h=Math.random()*50+20;
-  const trunkGeo = new THREE.CylinderGeometry(0.3,1.5,h,12);
-  const trunkMat = new THREE.MeshStandardMaterial({color:0x001800, wireframe:Math.random()<0.3});
-  const trunk = new THREE.Mesh(trunkGeo,trunkMat);
-  trunk.position.set(x,h/2,z);
+  const x = Math.random()*600 -300;
+  const z = Math.random()*600 -300;
+  const height = Math.random()*50 + 20;
+  const trunkGeo = new THREE.CylinderGeometry(0.3, 1.5, height, 12);
+  const trunkMat = new THREE.MeshStandardMaterial({
+    color: 0x001800,
+    wireframe: Math.random()<0.3
+  });
+  const trunk = new THREE.Mesh(trunkGeo, trunkMat);
+  trunk.position.set(x, height/2, z);
   scene.add(trunk);
 }
-// Suelo puntillista
-const pointCount=6000;
+
+// --- Suelo puntillista ---
+const pointCount = 6000;
 const pointsGeo = new THREE.BufferGeometry();
-const positions=[], colors=[];
+const positions = [];
+const colors = [];
 for(let i=0;i<pointCount;i++){
-  positions.push(Math.random()*600-300,0,Math.random()*600-300);
-  const green=0.1+Math.random()*0.6;
-  colors.push(0,green,0);
+  positions.push(Math.random()*600-300, 0, Math.random()*600-300);
+  const green = 0.1 + Math.random()*0.6;
+  colors.push(0, green, 0);
 }
 pointsGeo.setAttribute('position', new THREE.Float32BufferAttribute(positions,3));
 pointsGeo.setAttribute('color', new THREE.Float32BufferAttribute(colors,3));
-scene.add(new THREE.Points(pointsGeo, new THREE.PointsMaterial({vertexColors:true,size:0.25})));
+const pointsMat = new THREE.PointsMaterial({vertexColors:true, size:0.25});
+scene.add(new THREE.Points(pointsGeo, pointsMat));
 
 // --- Audio ---
-const audioData=[
-  {url:'https://dn721609.ca.archive.org/0/items/festival-la-ilusion-2023/La%20Ilusio%CC%81n%20Festival%20-%20Bosque%20Cautivo%20-%20Ivonne%20Vazquez%20Portilla.wav', label:'Bosque Cautivo - Ivonne Vazquez Portilla', pos:[0,1,0], color:0xff5555},
-  {url:'https://dn721609.ca.archive.org/0/items/festival-la-ilusion-2023/La%20Ilusio%CC%81n%20Festival%20-%20C001%20-%20Eliz%20Go%CC%81mez%20_Bioluminik_%20%28Obra%20sonora%29.wav', label:'C001 - Eliz Gómez - _Bioluminik_', pos:[50,1,50], color:0x55ff55}
-  // Puedes añadir más obras aquí...
-];
 function makeTextSprite(message){
-  const canvas=document.createElement('canvas');
-  const ctx=canvas.getContext('2d');
-  ctx.font="12px Arial";
-  const w=ctx.measureText(message).width+10;
-  const h=18;
-  canvas.width=w; canvas.height=h;
-  ctx.font="12px Arial"; ctx.fillStyle="white"; ctx.fillText(message,0,12);
-  const texture=new THREE.CanvasTexture(canvas);
-  return new THREE.Sprite(new THREE.SpriteMaterial({map:texture}));
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+  ctx.font = "12px Arial";
+  const w = ctx.measureText(message).width + 10;
+  const h = 18;
+  canvas.width = w; canvas.height = h;
+  ctx.font = "12px Arial";
+  ctx.fillStyle = "white";
+  ctx.fillText(message, 0, 12);
+  const texture = new THREE.CanvasTexture(canvas);
+  const sprite = new THREE.Sprite(new THREE.SpriteMaterial({map:texture}));
+  sprite.scale.set(w*0.02, h*0.02,1);
+  return sprite;
 }
+
+const audioData = [
+  {url:'https://dn721609.ca.archive.org/0/items/festival-la-ilusion-2023/La%20Ilusio%CC%81n%20Festival%20-%20Bosque%20Cautivo%20-%20Ivonne%20Vazquez%20Portilla.wav', label:'Bosque Cautivo - Ivonne Vazquez Portilla', pos:[0,1,0], color:0xff5555},
+  {url:'https://dn721609.ca.archive.org/0/items/festival-la-ilusion-2023/La%20Ilusio%CC%81n%20Festival%20-%20C001%20-%20Eliz%20Go%CC%81mez%20_Bioluminik_%20%28Obra%20sonora%29.wav', label:'C001 - Eliz Gómez - _Bioluminik_', pos:[50,1,50], color:0x55ff55},
+  {url:'https://dn721609.ca.archive.org/0/items/festival-la-ilusion-2023/La%20Ilusio%CC%81n%20Festival%20-%20Cuando%20suene%20el%20u%CC%81ltimo%20grillo%20-%20Fernando%20Feria%20_%20Irizaida%20Navar%20%28Obra%20sonora%29.wav', label:'El último grillo - Fernando Feria | Irizaida Navar', pos:[-50,1,50], color:0x5555ff},
+  {url:'https://dn721609.ca.archive.org/0/items/festival-la-ilusion-2023/La%20Ilusio%CC%81n%20Festival%20-%20Devenir%20poemas%20-%20Cecilia%20Morales%20%28Obra%20sonora%29.wav', label:'Devenir poemas - Cecilia Morales', pos:[-60,1,-60], color:0xffff55},
+  {url:'https://dn721609.ca.archive.org/0/items/festival-la-ilusion-2023/La%20Ilusio%CC%81n%20Festival%20-%20EcoEscucha%20-%20Zael%20Ortega%20%28Obra%20sonora%29.wav', label:'EcoEscucha - Zael Ortega', pos:[60,1,-60], color:0xff55ff},
+  {url:'https://dn721609.ca.archive.org/0/items/festival-la-ilusion-2023/La%20Ilusio%CC%81n%20Festival%20-%20El%20ritmo%20es%20el%20agua%20de%20las%20gotas%20que%20caen%20cuando%20lloras%20-%20He%CC%81ctor%20Ulises%20Vera%20%28Obra%20sonora%29%20wav.wav', label:'El ritmo es el agua de las gotas cuando lloras - Hector Ulises Vera', pos:[0,1,70], color:0x55ffff},
+  {url:'https://dn721609.ca.archive.org/0/items/festival-la-ilusion-2023/La%20Ilusio%CC%81n%20Festival%20-%20Eucalyptus%20-%20Nicolas%20Vazquez.wav', label:'Eucalyptus - Nicolas Vasquez', pos:[80,1,0], color:0xffffff},
+  {url:'https://dn721609.ca.archive.org/0/items/festival-la-ilusion-2023/La%20Ilusio%CC%81n%20Festival%20-%20Grindelia%20Buphtalmoides%20-%20Rodrigo%20Tamay%20.wav', label:'Grindelia Buphtalmoides - Rodrigo Tamay', pos:[-80,1,0], color:0xffaa55},
+  {url:'https://dn721609.ca.archive.org/0/items/festival-la-ilusion-2023/La%20Ilusio%CC%81n%20Festival%20-%20Lluvia%2C%20ri%CC%81o%2C%20humedal%20-%20Marina%20Carrasco%20%28Radio%29.wav', label:'Lluvia, río, humedal - Marina Carrasco', pos:[0,1,-80], color:0xaa55ff},
+  {url:'https://dn721609.ca.archive.org/0/items/festival-la-ilusion-2023/La%20Ilusio%CC%81n%20Festival%20-%20Ralu%CC%81n%20-%20Francisco%20Fuenzalida.wav', label:'Ralún - Francisco Fuen Salida', pos:[20,1,-100], color:0xffffff},
+];
+
 function initAudio(){
-  const listener = new THREE.AudioListener(); camera.add(listener);
+  const listener = new THREE.AudioListener();
+  camera.add(listener);
   audioData.forEach(item=>{
-    const sphere=new THREE.Mesh(new THREE.SphereGeometry(0.6,16,16), new THREE.MeshStandardMaterial({color:item.color}));
+    const sphere = new THREE.Mesh(
+      new THREE.SphereGeometry(0.6,16,16),
+      new THREE.MeshStandardMaterial({color:item.color})
+    );
     sphere.position.set(...item.pos);
-    const sound=new THREE.PositionalAudio(listener);
-    const audioLoader=new THREE.AudioLoader();
+    const sound = new THREE.PositionalAudio(listener);
+    const audioLoader = new THREE.AudioLoader();
     audioLoader.load(item.url, buffer=>{
-      sound.setBuffer(buffer); sound.setRefDistance(12); sound.setLoop(true); sound.setVolume(0.5); sound.play();
+      sound.setBuffer(buffer);
+      sound.setRefDistance(12);
+      sound.setLoop(true);
+      sound.setVolume(0.5);
+      sound.play();
     });
-    sphere.add(sound); scene.add(sphere);
+    sphere.add(sound);
+    scene.add(sphere);
+
     const sprite = makeTextSprite(item.label);
-    sprite.position.set(item.pos[0],item.pos[1]+0.8,item.pos[2]);
+    sprite.position.set(item.pos[0], item.pos[1]+0.8, item.pos[2]);
     scene.add(sprite);
+
+    const material = new THREE.LineBasicMaterial({color:item.color});
+    const points = [
+      new THREE.Vector3(item.pos[0], 100, item.pos[2]),
+      new THREE.Vector3(item.pos[0], item.pos[1], item.pos[2])
+    ];
+    const line = new THREE.Line(new THREE.BufferGeometry().setFromPoints(points), material);
+    scene.add(line);
   });
 }
 
-// --- Offsets de orientación ---
-let yawOffset=0, pitchOffset=0;
-function updateCameraFromDeviceOrientation(event){
-  const alpha=event.alpha?THREE.MathUtils.degToRad(event.alpha):0;
-  const beta=event.beta?THREE.MathUtils.degToRad(event.beta):0;
-  const gamma=event.gamma?THREE.MathUtils.degToRad(event.gamma):0;
-  const euler=new THREE.Euler(beta, alpha, -gamma, 'YXZ');
-  euler.y += yawOffset; euler.x += pitchOffset;
-  camera.quaternion.setFromEuler(euler);
-}
-if(window.DeviceOrientationEvent){
-  window.addEventListener('deviceorientation', updateCameraFromDeviceOrientation, true);
-}
-
-// --- Botón centrar vista ---
-const btnCenter=document.getElementById('btnCenter');
-btnCenter.addEventListener('click', ()=>{
-  const euler=new THREE.Euler().setFromQuaternion(camera.quaternion,'YXZ');
-  yawOffset=-euler.y; pitchOffset=-euler.x;
-});
-
-// --- Animación ---
-let prevTime=performance.now();
+// --- Controles y animación ---
+const controls = new PointerLockControls(camera, renderer.domElement);
+camera.position.y = 1.6;
+let prevTime = performance.now();
 function animate(){
   requestAnimationFrame(animate);
-  const time=performance.now(); const delta=(time-prevTime)/1000; prevTime=time;
+  const time = performance.now();
+  const delta = (time-prevTime)/1000;
+  prevTime = time;
   controls.update(delta);
   renderer.render(scene,camera);
 }
@@ -245,40 +316,157 @@ window.addEventListener('resize', ()=>{
   renderer.setSize(window.innerWidth,window.innerHeight);
 });
 
-// --- Controles táctiles ---
-const move = {forward:false,back:false,left:false,right:false};
-['Forward','Back','Left','Right'].forEach(dir=>{
-  const btn=document.getElementById('btn'+dir);
-  if(btn){
-    btn.addEventListener('touchstart', ()=> move[dir.toLowerCase()]=true);
-    btn.addEventListener('touchend', ()=> move[dir.toLowerCase()]=false);
-  }
-});
-const originalUpdate=controls.update.bind(controls);
-controls.update = (delta)=>{
-  originalUpdate(delta);
-  const speed=3;
-  controls.velocity.set(0,0,0);
-  if(move.forward) controls.velocity.z -= speed*delta;
-  if(move.back) controls.velocity.z += speed*delta;
-  if(move.left) controls.velocity.x -= speed*delta;
-  if(move.right) controls.velocity.x += speed*delta;
-  const dirVec = new THREE.Vector3();
-  dirVec.copy(controls.velocity).applyQuaternion(camera.quaternion);
-  camera.position.add(dirVec);
-};
+// --- Iniciar experiencia ---
+document.getElementById('enterBtn').addEventListener('click', async () => {
+  document.getElementById('overlay').style.display = 'none';
 
-// --- Botón Entrar al bosque ---
-document.getElementById('enterBtn').addEventListener('click', async ()=>{
-  document.getElementById('overlay').style.display='none';
-  initAudio();
-  animate();
-  // Pedir permiso orientación si es iOS
-  if(typeof DeviceOrientationEvent.requestPermission==='function'){
-    try{ await DeviceOrientationEvent.requestPermission(); }catch(e){console.warn(e);}
+  const isMobile = /Mobi|Android/i.test(navigator.userAgent);
+  const touchControls = document.getElementById('touchControls');
+
+  if (isMobile) {
+    // Mostrar controles táctiles
+    if (touchControls) touchControls.style.display = 'flex';
+
+    // Pedir permiso de orientación (necesario en iOS)
+    if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+      try {
+        const response = await DeviceOrientationEvent.requestPermission();
+        if (response !== 'granted') {
+          alert('Para rotar la vista con el movimiento del dispositivo, por favor activa el permiso de orientación.');
+        }
+      } catch (err) {
+        console.error('Error solicitando permiso de orientación:', err);
+      }
+    }
+
+// Botón para centrar orientación al horizonte
+const btnCenter = document.getElementById('btnCenter');
+if (btnCenter) {
+  btnCenter.addEventListener('click', () => {
+    // Obtener rotación actual como Euler
+    const euler = new THREE.Euler().setFromQuaternion(camera.quaternion, 'YXZ');
+
+    // Nivelar cámara: pitch y roll = 0
+    euler.x = 0; // mirar al frente horizontal
+    euler.z = 0; // nivelar la cámara
+
+    // Aplicar la rotación ajustada
+    camera.quaternion.setFromEuler(euler);
+  });
+}
+    // Rotar cámara con el movimiento físico del celular
+    if (window.DeviceOrientationEvent) {
+      window.addEventListener('deviceorientation', (event) => {
+        const alpha = event.alpha ? THREE.MathUtils.degToRad(event.alpha) : 0;
+        const beta  = event.beta  ? THREE.MathUtils.degToRad(event.beta)  : 0;
+        const gamma = event.gamma ? THREE.MathUtils.degToRad(event.gamma) : 0;
+
+        const euler = new THREE.Euler(beta, alpha, -gamma, 'YXZ');
+        camera.quaternion.setFromEuler(euler);
+      }, true);
+    } else {
+      console.log("DeviceOrientation no soportado en este dispositivo.");
+    }
+
+    // Iniciar experiencia móvil
+    initAudio();
+    animate();
+
+  } else {
+    // Computadores: activar control por mouse (Pointer Lock)
+    controls.lock();
+    initAudio();
+    animate();
   }
 });
+
+  // --- Controles táctiles de movimiento ---
+if (/Mobi|Android/i.test(navigator.userAgent)) {
+  const btnForward = document.getElementById('btnForward');
+  const btnBack = document.getElementById('btnBack');
+  const btnLeft = document.getElementById('btnLeft');
+  const btnRight = document.getElementById('btnRight');
+
+  let move = { forward:false, back:false, left:false, right:false };
+
+  const setMove = (dir, val) => { move[dir] = val; };
+
+  // Eventos táctiles
+  btnForward.addEventListener('touchstart', ()=> setMove('forward', true));
+  btnForward.addEventListener('touchend', ()=> setMove('forward', false));
+  btnBack.addEventListener('touchstart', ()=> setMove('back', true));
+  btnBack.addEventListener('touchend', ()=> setMove('back', false));
+  btnLeft.addEventListener('touchstart', ()=> setMove('left', true));
+  btnLeft.addEventListener('touchend', ()=> setMove('left', false));
+  btnRight.addEventListener('touchstart', ()=> setMove('right', true));
+  btnRight.addEventListener('touchend', ()=> setMove('right', false));
+
+  // Actualiza cámara según movimiento
+  const originalUpdate = controls.update.bind(controls);
+  controls.update = (delta) => {
+    const speed = 3;
+    controls.velocity.set(0,0,0);
+    if (move.forward) controls.velocity.z -= speed * delta;
+    if (move.back) controls.velocity.z += speed * delta;
+    if (move.left) controls.velocity.x -= speed * delta;
+    if (move.right) controls.velocity.x += speed * delta;
+    const direction = new THREE.Vector3();
+    direction.copy(controls.velocity).applyQuaternion(camera.quaternion);
+    camera.position.add(direction);
+  };
+}
 </script>
 
+
+
+<style>
+/* --- Estilos para los controles táctiles --- */
+  
+#touchControls {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+#touchControls button {
+  background: rgba(255,255,255,0.2);
+  border: 1px solid rgba(255,255,255,0.4);
+  color: white;
+  font-size: 18px;
+  padding: 8px 14px;
+  border-radius: 10px;
+  backdrop-filter: blur(4px);
+  user-select: none;
+}
+
+#middleButtons {
+  display: flex;
+  gap: 16px;
+}
+
+/* Botón "Centrar vista" un poco más pequeño */
+#btnCenter {
+  font-size: 16px;
+  padding: 6px 12px;
+  margin-top: 6px;
+  opacity: 0.8;
+}
+
+/* Mostrar solo en pantallas pequeñas */
+@media (max-width: 768px) {
+ #touchControls {
+  display: flex;
+}
+}
+
+</style>
+
+  
 </body>
 </html>
