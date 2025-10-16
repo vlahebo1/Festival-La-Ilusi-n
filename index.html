@@ -56,7 +56,7 @@ h5 {
   <button id="enterBtn">Entrar al bosque</button>
 
 <div><h6>Las obras sonoras incluids en la experiencia hacen parte de la selección del <strong>Festival La Ilusión y son propiedad de sus autorxs</strong><br>Para escuchar las obras de manera individual o recibir más información sobre el festival, ingresa al sitio web www.lailusionfestival.com</h6></div>
-<div><h6>beta. v.h.1</h6></div>
+<div><h6>beta. v.h (11:20)</h6></div>
 
 </div>
 
@@ -312,43 +312,48 @@ window.addEventListener('resize', ()=>{
 });
 
 // --- Iniciar experiencia ---
-document.getElementById('enterBtn').addEventListener('click', ()=>{
+document.getElementById('enterBtn').addEventListener('click', async () => {
   document.getElementById('overlay').style.display = 'none';
 
-  // --- Mostrar controles táctiles en móviles ---
-  if (/Mobi|Android/i.test(navigator.userAgent)) {
-    const touchControls = document.getElementById('touchControls');
-    if (touchControls) touchControls.style.display = 'flex';
-  }
+  const isMobile = /Mobi|Android/i.test(navigator.userAgent);
+  const touchControls = document.getElementById('touchControls');
 
-  if (/Mobi|Android/i.test(navigator.userAgent)) {
-    // --- Móviles: sin pointer lock ---
+  if (isMobile) {
+    // Mostrar controles táctiles
+    if (touchControls) touchControls.style.display = 'flex';
+
+    // Pedir permiso de orientación (necesario en iOS)
+    if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+      try {
+        const response = await DeviceOrientationEvent.requestPermission();
+        if (response !== 'granted') {
+          alert('Para rotar la vista con el movimiento del dispositivo, por favor activa el permiso de orientación.');
+        }
+      } catch (err) {
+        console.error('Error solicitando permiso de orientación:', err);
+      }
+    }
+
+    // Rotar cámara con el movimiento físico del celular
+    if (window.DeviceOrientationEvent) {
+      window.addEventListener('deviceorientation', (event) => {
+        const alpha = event.alpha ? THREE.MathUtils.degToRad(event.alpha) : 0;
+        const beta  = event.beta  ? THREE.MathUtils.degToRad(event.beta)  : 0;
+        const gamma = event.gamma ? THREE.MathUtils.degToRad(event.gamma) : 0;
+
+        const euler = new THREE.Euler(beta, alpha, -gamma, 'YXZ');
+        camera.quaternion.setFromEuler(euler);
+      }, true);
+    } else {
+      console.log("DeviceOrientation no soportado en este dispositivo.");
+    }
+
+    // Iniciar experiencia móvil
     initAudio();
     animate();
 
-    // --- Control táctil para rotar la vista ---
-    let touchX, touchY;
-    window.addEventListener('touchstart', (e) => {
-      const touch = e.touches[0];
-      touchX = touch.clientX;
-      touchY = touch.clientY;
-    });
-
-    window.addEventListener('touchmove', (e) => {
-      const touch = e.touches[0];
-      const deltaX = touch.clientX - touchX;
-      const deltaY = touch.clientY - touchY;
-      touchX = touch.clientX;
-      touchY = touch.clientY;
-
-      // Sensibilidad del giro
-      camera.rotation.y -= deltaX * 0.004;
-      camera.rotation.x -= deltaY * 0.004;
-      camera.rotation.x = Math.max(-Math.PI/2, Math.min(Math.PI/2, camera.rotation.x));
-    });
-
   } else {
-    // --- Computador: usar pointer lock ---
+    // Computadores: activar control por mouse (Pointer Lock)
     controls.lock();
     initAudio();
     animate();
