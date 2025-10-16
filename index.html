@@ -56,7 +56,7 @@ h5 {
   <button id="enterBtn">Entrar al bosque</button>
 
 <div><h6>Las obras sonoras incluids en la experiencia hacen parte de la selección del <strong>Festival La Ilusión y son propiedad de sus autorxs</strong><br>Para escuchar las obras de manera individual o recibir más información sobre el festival, ingresa al sitio web www.lailusionfestival.com</h6></div>
-<div><h6>beta. v.h (11:20)</h6></div>
+<div><h6>beta. v.h (11:27)</h6></div>
 
 </div>
 
@@ -129,6 +129,9 @@ const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHei
 const renderer = new THREE.WebGLRenderer({antialias:true});
 renderer.setSize(window.innerWidth,window.innerHeight);
 document.body.appendChild(renderer.domElement);
+camera.position.set(0, 1.6, 0);
+camera.lookAt(new THREE.Vector3(0, 1.6, -1));
+
 
 // --- Luz ambiental ---
 scene.add(new THREE.AmbientLight(0xffffff,0.6));
