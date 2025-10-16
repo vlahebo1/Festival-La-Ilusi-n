@@ -351,9 +351,7 @@ document.getElementById('enterBtn').addEventListener('click', () => {
   initAudio(); // Inicializa audio
 
   if(isMobile){
-    // Muestra controles táctiles
-    document.getElementById('touchControls').style.display = 'flex';
-
+  
     // Posición inicial
     camera.position.set(0, 1.6, 10);
     camera.lookAt(0, 1.6, 0);
