@@ -337,9 +337,89 @@ document.getElementById('enterBtn').addEventListener('click', ()=>{
     animate();
   }
 });
+
+  // --- Controles táctiles de movimiento ---
+if (/Mobi|Android/i.test(navigator.userAgent)) {
+  const btnForward = document.getElementById('btnForward');
+  const btnBack = document.getElementById('btnBack');
+  const btnLeft = document.getElementById('btnLeft');
+  const btnRight = document.getElementById('btnRight');
+
+  let move = { forward:false, back:false, left:false, right:false };
+
+  const setMove = (dir, val) => { move[dir] = val; };
+
+  // Eventos táctiles
+  btnForward.addEventListener('touchstart', ()=> setMove('forward', true));
+  btnForward.addEventListener('touchend', ()=> setMove('forward', false));
+  btnBack.addEventListener('touchstart', ()=> setMove('back', true));
+  btnBack.addEventListener('touchend', ()=> setMove('back', false));
+  btnLeft.addEventListener('touchstart', ()=> setMove('left', true));
+  btnLeft.addEventListener('touchend', ()=> setMove('left', false));
+  btnRight.addEventListener('touchstart', ()=> setMove('right', true));
+  btnRight.addEventListener('touchend', ()=> setMove('right', false));
+
+  // Actualiza cámara según movimiento
+  const originalUpdate = controls.update.bind(controls);
+  controls.update = (delta) => {
+    const speed = 3;
+    controls.velocity.set(0,0,0);
+    if (move.forward) controls.velocity.z -= speed * delta;
+    if (move.back) controls.velocity.z += speed * delta;
+    if (move.left) controls.velocity.x -= speed * delta;
+    if (move.right) controls.velocity.x += speed * delta;
+    const direction = new THREE.Vector3();
+    direction.copy(controls.velocity).applyQuaternion(camera.quaternion);
+    camera.position.add(direction);
+  };
+}
 </script>
 
+<!-- Controles táctiles -->
+<div id="touchControls">
+  <button id="btnForward">▲</button>
+  <div id="middleButtons">
+    <button id="btnLeft">◀</button>
+    <button id="btnBack">▼</button>
+    <button id="btnRight">▶</button>
+  </div>
+</div>
 
+<style>
+  /* --- Estilos para los controles táctiles --- */
+  #touchControls {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    display: none; /* Oculto por defecto, solo móviles */
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  #touchControls button {
+    background: rgba(255,255,255,0.2);
+    border: 1px solid rgba(255,255,255,0.4);
+    color: white;
+    font-size: 24px;
+    padding: 10px 18px;
+    border-radius: 10px;
+    backdrop-filter: blur(4px);
+    user-select: none;
+  }
+
+  #middleButtons {
+    display: flex;
+    gap: 16px;
+  }
+
+  /* Mostrar solo en pantallas pequeñas */
+  @media (max-width: 768px) {
+    #touchControls { display: flex; }
+  }
+</style>
 
   
 </body>
