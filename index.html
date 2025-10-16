@@ -340,20 +340,41 @@ document.getElementById('enterBtn').addEventListener('click', async () => {
     }
 
 // Botón para centrar orientación al horizonte
+
+// --- Offset de rotación para centrar vista ---
+let yawOffset = 0;
+
+// Botón "Centrar vista"
 const btnCenter = document.getElementById('btnCenter');
 if (btnCenter) {
   btnCenter.addEventListener('click', () => {
-    // Obtener rotación actual como Euler
+    // Calcula el yaw actual de la cámara
     const euler = new THREE.Euler().setFromQuaternion(camera.quaternion, 'YXZ');
-
-    // Nivelar cámara: pitch y roll = 0
-    euler.x = 0; // mirar al frente horizontal
-    euler.z = 0; // nivelar la cámara
-
-    // Aplicar la rotación ajustada
-    camera.quaternion.setFromEuler(euler);
+    yawOffset = -euler.y; // offset para que el frente quede mirando al eje Z negativo
   });
 }
+
+// Rotar cámara con el movimiento físico del celular
+if (window.DeviceOrientationEvent) {
+  window.addEventListener('deviceorientation', (event) => {
+    const alpha = event.alpha ? THREE.MathUtils.degToRad(event.alpha) : 0;
+    const beta  = event.beta  ? THREE.MathUtils.degToRad(event.beta)  : 0;
+    const gamma = event.gamma ? THREE.MathUtils.degToRad(event.gamma) : 0;
+
+    // Euler según DeviceOrientation
+    const euler = new THREE.Euler(beta, alpha, -gamma, 'YXZ');
+
+    // Aplica el offset de yaw para centrar la vista
+    euler.y += yawOffset;
+
+    // Aplica la rotación a la cámara
+    camera.quaternion.setFromEuler(euler);
+  }, true);
+}
+
+
+
+    
     // Rotar cámara con el movimiento físico del celular
     if (window.DeviceOrientationEvent) {
       window.addEventListener('deviceorientation', (event) => {
