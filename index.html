@@ -136,7 +136,7 @@ h5 {
   <button id="enterBtn">Entrar al bosque</button>
 
 <div><h6>Las obras sonoras incluidas en esta experiencia hacen parte de la selección del Festival La Ilusión, y son propiedad de sus autorxs<br>Las obras de individuales están disponibles en www.lailusionfestival.com</h6></div>
-<div><h2>|||| @vlahebo v1.6</h2></div>
+<div><h2>|||| @vlahebo v1.7</h2></div>
 
 </div>
 
@@ -526,11 +526,9 @@ function connectUnderground(elements, count = 40) {
       new THREE.Vector3(b.position.x, depth, b.position.z)
     ];
 
-    // Curva para el tubo
     const curve = new THREE.CatmullRomCurve3(points);
     const tubeGeo = new THREE.TubeGeometry(curve, 20, 0.02, 8, false);
 
-    // Color base oscuro
     const tubeMat = new THREE.MeshBasicMaterial({
       color: 0x22ff22,
       transparent: true,
@@ -542,60 +540,23 @@ function connectUnderground(elements, count = 40) {
 
     lines.push({
       mesh: tube,
-      speed: Math.random() * 3 + 1, // velocidad de pulso
+      speed: Math.random() * 3 + 1,
       baseOpacity: tubeMat.opacity
     });
   }
 
-  // Animar brillo en el render loop
-  function animateLines(time) {
-    lines.forEach(line => {
-      line.mesh.material.opacity = line.baseOpacity + 0.3 * Math.sin(time * 0.002 * line.speed);
-    });
-  }
-
-  // Inyectar en tu animate principal
+  // Animación de brillo
   const originalAnimate = animate;
   animate = function() {
     requestAnimationFrame(animate);
     const time = performance.now();
-    animateLines(time);
+    lines.forEach(line => {
+      line.mesh.material.opacity = line.baseOpacity + 0.3 * Math.sin(time * 0.002 * line.speed);
+    });
     originalAnimate();
   }
 }
 
-
-// --- Conexiones entre árboles y personas bajo el suelo ---
-function connectUnderground(elements, count = 30) {
-  for (let i = 0; i < count; i++) {
-    const a = elements[Math.floor(Math.random() * elements.length)];
-    const b = elements[Math.floor(Math.random() * elements.length)];
-    if (a === b) continue;
-
-    const material = new THREE.LineBasicMaterial({
-      color: 0x112211,
-      transparent: true,
-      opacity: 0.45,
-    });
-
-    // profundidad bajo el suelo
-    const depth = -Math.random() * 6 - 1.5;
-
-    const points = [
-      new THREE.Vector3(a.position.x, depth, a.position.z),
-      new THREE.Vector3(
-        (a.position.x + b.position.x) / 2 + (Math.random() - 0.5) * 3,
-        depth - Math.random() * 2,
-        (a.position.z + b.position.z) / 2 + (Math.random() - 0.5) * 3
-      ),
-      new THREE.Vector3(b.position.x, depth, b.position.z),
-    ];
-
-    const geo = new THREE.BufferGeometry().setFromPoints(points);
-    const line = new THREE.Line(geo, material);
-    scene.add(line);
-  }
-}
 
 
 
