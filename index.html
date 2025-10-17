@@ -136,7 +136,7 @@ h5 {
   <button id="enterBtn">Entrar al bosque</button>
 
 <div><h6>Las obras sonoras incluidas en esta experiencia hacen parte de la selección del Festival La Ilusión, y son propiedad de sus autorxs<br>Las obras de individuales están disponibles en www.lailusionfestival.com</h6></div>
-<div><h2>|||| @vlahebo v1.3</h2></div>
+<div><h2>|||| @vlahebo v1.4</h2></div>
 
 </div>
 
@@ -351,6 +351,8 @@ const audioData = [
 function initAudio(){
   const listener = new THREE.AudioListener();
   camera.add(listener);
+  const humanTrees = [];
+
 
   audioData.forEach((item, index) => {
     const darkColor = new THREE.Color(item.color).multiplyScalar(0.4);
@@ -481,6 +483,8 @@ function initAudio(){
       sound.play();
     });
     group.add(sound);
+    humanTrees.push(group);
+
 
     // --- Texto ---
     const sprite = makeTextSprite(item.label, {fontsize:12, textColor:"white"});
@@ -496,6 +500,42 @@ function initAudio(){
     const line = new THREE.Line(new THREE.BufferGeometry().setFromPoints(points), material);
     scene.add(line);
   });
+
+  connectUnderground(humanTrees, 40); // 40 conexiones subterráneas
+
+}
+
+// --- Conexiones subterráneas entre árboles humanos ---
+function connectUnderground(elements, count = 25) {
+  for (let i = 0; i < count; i++) {
+    const a = elements[Math.floor(Math.random() * elements.length)];
+    const b = elements[Math.floor(Math.random() * elements.length)];
+    if (a === b) continue;
+
+    const material = new THREE.LineBasicMaterial({
+      color: 0x111a11, // verde oscuro / negro
+      transparent: true,
+      opacity: 0.45,
+    });
+
+    const depth = -Math.random() * 4 - 1.5; // nivel bajo el suelo
+
+    const points = [
+      new THREE.Vector3(a.position.x, depth, a.position.z),
+      new THREE.Vector3(b.position.x, depth, b.position.z)
+    ];
+
+    const mid = new THREE.Vector3(
+      (a.position.x + b.position.x) / 2 + (Math.random() - 0.5) * 3,
+      depth - Math.random() * 2,
+      (a.position.z + b.position.z) / 2 + (Math.random() - 0.5) * 3
+    );
+    points.splice(1, 0, mid);
+
+    const geo = new THREE.BufferGeometry().setFromPoints(points);
+    const line = new THREE.Line(geo, material);
+    scene.add(line);
+  }
 }
 
 
