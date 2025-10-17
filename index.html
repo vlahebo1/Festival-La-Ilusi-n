@@ -136,7 +136,7 @@ h5 {
   <button id="enterBtn">Entrar al bosque</button>
 
 <div><h6>Las obras sonoras incluidas en esta experiencia hacen parte de la selección del Festival La Ilusión, y son propiedad de sus autorxs<br>Las obras de individuales están disponibles en www.lailusionfestival.com</h6></div>
-<div><h2>|||| @vlahebo v1.4</h2></div>
+<div><h2>|||| @vlahebo v1.5</h2></div>
 
 </div>
 
@@ -531,6 +531,39 @@ function connectUnderground(elements, count = 25) {
       (a.position.z + b.position.z) / 2 + (Math.random() - 0.5) * 3
     );
     points.splice(1, 0, mid);
+
+    const geo = new THREE.BufferGeometry().setFromPoints(points);
+    const line = new THREE.Line(geo, material);
+    scene.add(line);
+  }
+}
+
+
+// --- Conexiones entre árboles y personas bajo el suelo ---
+function connectUnderground(elements, count = 30) {
+  for (let i = 0; i < count; i++) {
+    const a = elements[Math.floor(Math.random() * elements.length)];
+    const b = elements[Math.floor(Math.random() * elements.length)];
+    if (a === b) continue;
+
+    const material = new THREE.LineBasicMaterial({
+      color: 0x112211,
+      transparent: true,
+      opacity: 0.45,
+    });
+
+    // profundidad bajo el suelo
+    const depth = -Math.random() * 6 - 1.5;
+
+    const points = [
+      new THREE.Vector3(a.position.x, depth, a.position.z),
+      new THREE.Vector3(
+        (a.position.x + b.position.x) / 2 + (Math.random() - 0.5) * 3,
+        depth - Math.random() * 2,
+        (a.position.z + b.position.z) / 2 + (Math.random() - 0.5) * 3
+      ),
+      new THREE.Vector3(b.position.x, depth, b.position.z),
+    ];
 
     const geo = new THREE.BufferGeometry().setFromPoints(points);
     const line = new THREE.Line(geo, material);
