@@ -366,14 +366,24 @@ const audioData = [
 ];
 
 // --- Textos ocultos entre los árboles ---
-const hiddenTexts = [
-  "El mundo siempre es nuevo...Por muy viejas que sean sus raíces - Ursula K Leguin",
-  "Como un tejido, para restaurar un bosque primero debemos entende de qué está hecho - Humberto Cumbalaza",
-  "El florecimiento será cultivado como una respons|habilidad multiespecies - Donna J. Haraway",
-  "Construir relaciones simbióticas significa aprender a prestar atención - Helen Torres",
+const hiddenTextMessages = [
+  "El mundo siempre es nuevo... Por muy viejas que sean sus raíces. — Ursula K. Le Guin",
+  "Como un tejido, para restaurar un bosque primero debemos entender de qué está hecho. — Humberto Cumbalaza",
+  "El florecimiento será cultivado como una respons|habilidad multiespecies. — Donna J. Haraway",
+  "Construir relaciones simbióticas significa aprender a prestar atención. — Helen Torres"
 ];
 
-  // Conecta los textos ocultos con árboles al azar mediante líneas subterráneas
+// Crear sprites de texto escondidos
+const hiddenTexts = hiddenTextMessages.map((msg, i) => {
+  const pos = new THREE.Vector3(
+    (Math.random() - 0.5) * 300, // dispersión aleatoria
+    0,
+    (Math.random() - 0.5) * 300
+  );
+  return createHiddenText(msg, pos);
+});
+
+// Conectar los textos ocultos con árboles al azar mediante líneas subterráneas
 hiddenTexts.forEach(textSprite => {
   const randomTree = treePositions[Math.floor(Math.random() * treePositions.length)];
   connectUnderground(
