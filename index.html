@@ -136,7 +136,7 @@ h5 {
   <button id="enterBtn">Entrar al bosque</button>
 
 <div><h6>Las obras sonoras incluidas en esta experiencia hacen parte de la selección del Festival La Ilusión, y son propiedad de sus autorxs<br>Las obras de individuales están disponibles en www.lailusionfestival.com</h6></div>
-<div><h2>|||| @vlahebo v1.0</h2></div>
+<div><h2>|||| @vlahebo v1.1</h2></div>
 
 </div>
 
@@ -351,49 +351,72 @@ const audioData = [
 function initAudio(){
   const listener = new THREE.AudioListener();
   camera.add(listener);
+
   audioData.forEach(item=>{
-    // --- Crear "árbol humano" como fuente sonora ---
-const group = new THREE.Group();
+    // --- Crear "árbol humano" en contorno ---
+    const group = new THREE.Group();
 
-// Tronco-cuerpo
-const bodyGeo = new THREE.CylinderGeometry(0.15, 0.3, 2, 8);
-const bodyMat = new THREE.MeshStandardMaterial({color:item.color, wireframe:false});
-const body = new THREE.Mesh(bodyGeo, bodyMat);
-body.position.y = 1;
-group.add(body);
+    // Tronco-cuerpo (contorno)
+    const bodyGeo = new THREE.CylinderGeometry(0.15, 0.3, 2, 12);
+    const bodyMat = new THREE.MeshBasicMaterial({color:item.color, wireframe:true});
+    const body = new THREE.Mesh(bodyGeo, bodyMat);
+    body.position.y = 1;
+    group.add(body);
 
-// Cabeza
-const headGeo = new THREE.SphereGeometry(0.3, 8, 8);
-const headMat = new THREE.MeshStandardMaterial({color:item.color});
-const head = new THREE.Mesh(headGeo, headMat);
-head.position.y = 2.3;
-group.add(head);
+    // Cabeza como copa de ramas desordenadas
+    const headGroup = new THREE.Group();
+    for (let i = 0; i < 10; i++) {
+      const branchGeo = new THREE.CylinderGeometry(0.02, 0.1, Math.random()*1.5+0.5, 6);
+      const branchMat = new THREE.MeshBasicMaterial({color:item.color, wireframe:true});
+      const branch = new THREE.Mesh(branchGeo, branchMat);
+      branch.position.y = 2.3 + Math.random()*0.8;
+      branch.rotation.set(
+        Math.random()*Math.PI,
+        Math.random()*Math.PI,
+        Math.random()*Math.PI
+      );
+      headGroup.add(branch);
+    }
+    group.add(headGroup);
 
-// Brazos tipo ramas
-for (let i = 0; i < 2; i++) {
-  const armGeo = new THREE.CylinderGeometry(0.05, 0.1, 1.2, 6);
-  const armMat = new THREE.MeshStandardMaterial({color:item.color, wireframe:true});
-  const arm = new THREE.Mesh(armGeo, armMat);
-  arm.position.y = 1.8;
-  arm.position.x = i === 0 ? -0.5 : 0.5;
-  arm.rotation.z = i === 0 ? Math.PI / 3 : -Math.PI / 3;
-  group.add(arm);
-}
+    // Brazos tipo ramas con dedos
+    for (let i = 0; i < 2; i++) {
+      const armGeo = new THREE.CylinderGeometry(0.04, 0.08, 1.2, 8);
+      const armMat = new THREE.MeshBasicMaterial({color:item.color, wireframe:true});
+      const arm = new THREE.Mesh(armGeo, armMat);
+      arm.position.y = 1.8;
+      arm.position.x = i === 0 ? -0.5 : 0.5;
+      arm.rotation.z = i === 0 ? Math.PI / 3 : -Math.PI / 3;
 
-// Raíces-piernas
-for (let i = 0; i < 2; i++) {
-  const legGeo = new THREE.CylinderGeometry(0.05, 0.1, 1.3, 6);
-  const legMat = new THREE.MeshStandardMaterial({color:item.color, wireframe:true});
-  const leg = new THREE.Mesh(legGeo, legMat);
-  leg.position.y = 0.1;
-  leg.position.x = i === 0 ? -0.25 : 0.25;
-  leg.rotation.z = i === 0 ? Math.PI / 15 : -Math.PI / 15;
-  group.add(leg);
-}
+      // Dedos como ramas pequeñas
+      for (let j = 0; j < 3; j++) {
+        const fingerGeo = new THREE.CylinderGeometry(0.01, 0.03, 0.5, 6);
+        const fingerMat = new THREE.MeshBasicMaterial({color:item.color, wireframe:true});
+        const finger = new THREE.Mesh(fingerGeo, fingerMat);
+        finger.position.y = 0.6;
+        finger.position.x = (j - 1) * 0.1;
+        finger.rotation.z = (j - 1) * 0.4;
+        arm.add(finger);
+      }
 
-group.position.set(...item.pos);
-scene.add(group);
+      group.add(arm);
+    }
 
+    // Raíces-piernas en contorno
+    for (let i = 0; i < 2; i++) {
+      const legGeo = new THREE.CylinderGeometry(0.04, 0.1, 1.3, 6);
+      const legMat = new THREE.MeshBasicMaterial({color:item.color, wireframe:true});
+      const leg = new THREE.Mesh(legGeo, legMat);
+      leg.position.y = 0.1;
+      leg.position.x = i === 0 ? -0.25 : 0.25;
+      leg.rotation.z = i === 0 ? Math.PI / 15 : -Math.PI / 15;
+      group.add(leg);
+    }
+
+    group.position.set(...item.pos);
+    scene.add(group);
+
+    // Audio posicional
     const sound = new THREE.PositionalAudio(listener);
     const audioLoader = new THREE.AudioLoader();
     audioLoader.load(item.url, buffer=>{
@@ -405,11 +428,12 @@ scene.add(group);
     });
     group.add(sound);
 
-const sprite = makeTextSprite(item.label, {fontsize:12, textColor:"white"});
-sprite.position.set(item.pos[0], item.pos[1] + 3.0, item.pos[2]); // más alto, centrado sobre la cabeza
-scene.add(sprite);
+    // Texto flotante
+    const sprite = makeTextSprite(item.label, {fontsize:12, textColor:"white"});
+    sprite.position.set(item.pos[0], item.pos[1] + 3.0, item.pos[2]);
+    scene.add(sprite);
 
-
+    // Línea desde el cielo
     const material = new THREE.LineBasicMaterial({color:item.color});
     const points = [
       new THREE.Vector3(item.pos[0], 100, item.pos[2]),
@@ -419,6 +443,7 @@ scene.add(sprite);
     scene.add(line);
   });
 }
+
 
 // --- Controles y animación ---
 const controls = new PointerLockControls(camera, renderer.domElement);
