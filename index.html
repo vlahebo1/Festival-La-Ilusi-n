@@ -150,7 +150,7 @@ h5 {
   <button id="enterBtn">Entrar al bosque</button>
 
 <div><h6>Las obras sonoras incluidas en esta experiencia hacen parte de la selección del Festival La Ilusión, y son propiedad de sus autorxs<br>Las obras de individuales están disponibles en www.lailusionfestival.com</h6></div>
-<div><h2>|||| @vlahebo v1.8g</h2></div>
+<div><h2>|||| @vlahebo v1.8h</h2></div>
 
 </div>
 
@@ -372,6 +372,15 @@ const hiddenTexts = [
   "El florecimiento será cultivado como una respons|habilidad multiespecies - Donna J. Haraway",
   "Construir relaciones simbióticas significa aprender a prestar atención - Helen Torres",
 ];
+
+  // Conecta los textos ocultos con árboles al azar mediante líneas subterráneas
+hiddenTexts.forEach(textSprite => {
+  const randomTree = treePositions[Math.floor(Math.random() * treePositions.length)];
+  connectUnderground(
+    new THREE.Vector3(randomTree.x, 0, randomTree.z),
+    textSprite.position
+  );
+});
 
 function createHiddenText(message, position) {
   const canvas = document.createElement('canvas');
