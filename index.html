@@ -136,7 +136,7 @@ h5 {
   <button id="enterBtn">Entrar al bosque</button>
 
 <div><h6>Las obras sonoras incluidas en esta experiencia hacen parte de la selección del Festival La Ilusión, y son propiedad de sus autorxs<br>Las obras de individuales están disponibles en www.lailusionfestival.com</h6></div>
-<div><h2>|||| @vlahebo v1.7</h2></div>
+<div><h2>|||| @vlahebo v1.8a</h2></div>
 
 </div>
 
@@ -506,56 +506,41 @@ function initAudio(){
 }
 
 // --- Conexiones subterráneas entre árboles humanos ---
-function connectUnderground(elements, count = 40) {
-  const lines = [];
-
+function connectUnderground(elements, count = 20) { // menos líneas
   for (let i = 0; i < count; i++) {
     const a = elements[Math.floor(Math.random() * elements.length)];
     const b = elements[Math.floor(Math.random() * elements.length)];
     if (a === b) continue;
 
-    const depth = -0.5 - Math.random() * 1.5; // debajo del suelo
+    const depth = -0.5 - Math.random() * 1.5;
 
+    // Crear puntos de curva suave
     const points = [
       new THREE.Vector3(a.position.x, depth, a.position.z),
       new THREE.Vector3(
-        (a.position.x + b.position.x)/2 + (Math.random()-0.5)*3,
-        depth - Math.random()*2,
-        (a.position.z + b.position.z)/2 + (Math.random()-0.5)*3
+        (a.position.x + b.position.x) / 2 + (Math.random() - 0.5) * 2,
+        depth - Math.random() * 1,
+        (a.position.z + b.position.z) / 2 + (Math.random() - 0.5) * 2
       ),
       new THREE.Vector3(b.position.x, depth, b.position.z)
     ];
 
+    // Curva tipo Catmull-Rom
     const curve = new THREE.CatmullRomCurve3(points);
-    const tubeGeo = new THREE.TubeGeometry(curve, 20, 0.02, 8, false);
+    const geometry = new THREE.BufferGeometry().setFromPoints(curve.getPoints(20));
 
-    const tubeMat = new THREE.MeshBasicMaterial({
-      color: 0x22ff22,
-      transparent: true,
-      opacity: 0.6
+    // Material oscuro y delgado
+    const colors = [0x112211, 0x223322, 0x334433];
+    const material = new THREE.LineBasicMaterial({
+      color: colors[Math.floor(Math.random() * colors.length)],
+      transparent: false,
     });
 
-    const tube = new THREE.Mesh(tubeGeo, tubeMat);
-    scene.add(tube);
-
-    lines.push({
-      mesh: tube,
-      speed: Math.random() * 3 + 1,
-      baseOpacity: tubeMat.opacity
-    });
-  }
-
-  // Animación de brillo
-  const originalAnimate = animate;
-  animate = function() {
-    requestAnimationFrame(animate);
-    const time = performance.now();
-    lines.forEach(line => {
-      line.mesh.material.opacity = line.baseOpacity + 0.3 * Math.sin(time * 0.002 * line.speed);
-    });
-    originalAnimate();
+    const line = new THREE.Line(geometry, material);
+    scene.add(line);
   }
 }
+
 
 
 
