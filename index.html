@@ -136,7 +136,7 @@ h5 {
   <button id="enterBtn">Entrar al bosque</button>
 
 <div><h6>Las obras sonoras incluidas en esta experiencia hacen parte de la selección del Festival La Ilusión, y son propiedad de sus autorxs<br>Las obras de individuales están disponibles en www.lailusionfestival.com</h6></div>
-<div><h2>|||| @vlahebo v1.8</h2></div>
+<div><h2>|||| @vlahebo v1.7</h2></div>
 
 </div>
 
@@ -544,19 +544,6 @@ function connectUnderground(elements, count = 40) {
       baseOpacity: tubeMat.opacity
     });
   }
-
-  // Animación de brillo
-  const originalAnimate = animate;
-  animate = function() {
-    requestAnimationFrame(animate);
-    const time = performance.now();
-    lines.forEach(line => {
-      line.mesh.material.opacity = line.baseOpacity + 0.3 * Math.sin(time * 0.002 * line.speed);
-    });
-    originalAnimate();
-  }
-}
-
 
   // Animación de brillo
   const originalAnimate = animate;
