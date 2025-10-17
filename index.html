@@ -137,7 +137,7 @@ h5 {
   font-size: 16px;
   border-radius: 8px;
   z-index: 10000;
-">Bosque perdido en Colombia mientras estás aquí: 0 m²</div>
+">"Bosque perdido en Colombia por segundo: 54 m²" (Geovisor IDEAM) </div>
 <div id="overlay">
 
   
@@ -150,7 +150,7 @@ h5 {
   <button id="enterBtn">Entrar al bosque</button>
 
 <div><h6>Las obras sonoras incluidas en esta experiencia hacen parte de la selección del Festival La Ilusión, y son propiedad de sus autorxs<br>Las obras de individuales están disponibles en www.lailusionfestival.com</h6></div>
-<div><h2>|||| @vlahebo v1.8e</h2></div>
+<div><h2>|||| @vlahebo v1.8f</h2></div>
 
 </div>
 
@@ -612,7 +612,7 @@ function animate(){
   controls.update(delta);
   elapsedTime += delta;
 const lostArea = Math.floor(lossRate * elapsedTime);
-forestLossDiv.textContent = `Bosque perdido: ${lostArea.toLocaleString()} m²`;
+forestLossDiv.textContent = `Bosque perdido en Colombia mientras estás aquí: ${lostArea.toLocaleString()} m²`;
   renderer.render(scene,camera);
 }
 
@@ -749,7 +749,7 @@ createJoystick('calc(100% - 150px)','30px', joystickRight); // derecho abajo
       camera.quaternion.setFromEuler(euler);
       elapsedTime += delta;
 const lostArea = Math.floor(lossRate * elapsedTime);
-forestLossDiv.textContent = `Bosque perdido: ${lostArea.toLocaleString()} m²`;
+forestLossDiv.textContent = `Bosque perdido en Colombia mientras estás aquí:${lostArea.toLocaleString()} m²`;
       renderer.render(scene, camera);
     }
     animateMobileFPS();
