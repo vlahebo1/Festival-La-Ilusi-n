@@ -137,7 +137,7 @@ h5 {
   font-size: 16px;
   border-radius: 8px;
   z-index: 10000;
-">"Bosque perdido en Colombia por segundo: 54 m²" (Geovisor IDEAM) </div>
+"></div>
 <div id="overlay">
 
   
@@ -150,7 +150,7 @@ h5 {
   <button id="enterBtn">Entrar al bosque</button>
 
 <div><h6>Las obras sonoras incluidas en esta experiencia hacen parte de la selección del Festival La Ilusión, y son propiedad de sus autorxs<br>Las obras de individuales están disponibles en www.lailusionfestival.com</h6></div>
-<div><h2>|||| @vlahebo v1.8f</h2></div>
+<div><h2>|||| @vlahebo v1.8g</h2></div>
 
 </div>
 
@@ -373,21 +373,27 @@ const hiddenTexts = [
   "Construir relaciones simbióticas significa aprender a prestar atención - Helen Torres",
 ];
 
-function createHiddenText(message, position){
+function createHiddenText(message, position) {
   const canvas = document.createElement('canvas');
   const ctx = canvas.getContext('2d');
-  ctx.font = "18px monospace";
-  const w = ctx.measureText(message).width + 20;
-  const h = 24;
+  const fontSize = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ? 32 : 18;
+  ctx.font = `${fontSize}px monospace`;
+  const w = ctx.measureText(message).width + 40;
+  const h = fontSize + 10;
   canvas.width = w;
   canvas.height = h;
-  ctx.font = "18px monospace";
-  ctx.fillStyle = "rgba(255,255,255,1)"; // blanco y totalmente opaco
-  ctx.fillText(message, 0, 18);
+
+  ctx.font = `${fontSize}px monospace`;
+  ctx.fillStyle = "rgba(200, 200, 200, 0.9)"; // más visible
+  ctx.strokeStyle = "rgba(0,0,0,0.5)";
+  ctx.lineWidth = 3;
+  ctx.strokeText(message, 0, fontSize);
+  ctx.fillText(message, 0, fontSize);
+
   const texture = new THREE.CanvasTexture(canvas);
-  const sprite = new THREE.Sprite(new THREE.SpriteMaterial({map: texture, transparent:true}));
-  sprite.scale.set(w*0.02, h*0.02, 1);
-  sprite.position.set(position.x, position.y, position.z);
+  const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: texture, transparent: true }));
+  sprite.scale.set(w * 0.02, h * 0.02, 1);
+  sprite.position.set(position.x, position.y + 1.5, position.z); // más alto
   scene.add(sprite);
   return sprite;
 }
