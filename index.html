@@ -150,7 +150,7 @@ h5 {
   <button id="enterBtn">Entrar al bosque</button>
 
 <div><h6>Las obras sonoras incluidas en esta experiencia hacen parte de la selección del Festival La Ilusión, y son propiedad de sus autorxs<br>Las obras de individuales están disponibles en www.lailusionfestival.com</h6></div>
-<div><h2>|||| @vlahebo v1.8i</h2></div>
+<div><h2>|||| @vlahebo v1.8j</h2></div>
 
 </div>
 
@@ -386,10 +386,10 @@ const hiddenTexts = hiddenTextMessages.map((msg, i) => {
 // Conectar los textos ocultos con árboles al azar mediante líneas subterráneas
 hiddenTexts.forEach(textSprite => {
   const randomTree = treePositions[Math.floor(Math.random() * treePositions.length)];
-  connectUnderground(
-    new THREE.Vector3(randomTree.x, 0, randomTree.z),
-    textSprite.position
-  );
+ connectUndergroundText(
+  new THREE.Vector3(randomTree.x, 0, randomTree.z),
+  textSprite.position
+);
 });
 
 function createHiddenText(message, position) {
@@ -613,6 +613,29 @@ function connectUnderground(elements, count = 20) { // menos líneas
   }
 }
 
+// --- Conexiones subterráneas entre árboles y textos ocultos ---
+function connectUndergroundText(from, to) {
+  const depth = -0.5 - Math.random() * 1.5;
+  const points = [
+    new THREE.Vector3(from.x, depth, from.z),
+    new THREE.Vector3(
+      (from.x + to.x) / 2 + (Math.random() - 0.5) * 2,
+      depth - Math.random(),
+      (from.z + to.z) / 2 + (Math.random() - 0.5) * 2
+    ),
+    new THREE.Vector3(to.x, depth, to.z)
+  ];
+
+  const curve = new THREE.CatmullRomCurve3(points);
+  const geometry = new THREE.BufferGeometry().setFromPoints(curve.getPoints(20));
+  const material = new THREE.LineBasicMaterial({
+    color: 0x223322,
+    transparent: false
+  });
+
+  const line = new THREE.Line(geometry, material);
+  scene.add(line);
+}
 
 // --- Colocar los textos ocultos entre los árboles ---
 const hiddenSprites = [];
