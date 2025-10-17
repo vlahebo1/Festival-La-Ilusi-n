@@ -136,7 +136,7 @@ h5 {
   <button id="enterBtn">Entrar al bosque</button>
 
 <div><h6>Las obras sonoras incluidas en esta experiencia hacen parte de la selección del Festival La Ilusión, y son propiedad de sus autorxs<br>Las obras de individuales están disponibles en www.lailusionfestival.com</h6></div>
-<div><h2>|||| @vlahebo v1.8a</h2></div>
+<div><h2>|||| @vlahebo v1.8b</h2></div>
 
 </div>
 
@@ -348,6 +348,38 @@ const audioData = [
   {url:'https://dn721609.ca.archive.org/0/items/festival-la-ilusion-2023/La%20Ilusio%CC%81n%20Festival%20-%20Ralu%CC%81n%20-%20Francisco%20Fuenzalida.wav', label:'Ralún - Francisco Fuen Salida', pos:[20,1,-100], color:0xffffff},
 ];
 
+// --- Textos ocultos entre los árboles ---
+const hiddenTexts = [
+  "Siente el bosque",
+  "¿Escucha!",
+  "Caminante, no hay camino",
+  "La ilusión vive aquí",
+  "Susurra el viento",
+  "Sombras y luz",
+];
+
+function createHiddenText(message, position){
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+  ctx.font = "18px monospace";
+  const w = ctx.measureText(message).width + 20;
+  const h = 24;
+  canvas.width = w;
+  canvas.height = h;
+  ctx.font = "18px monospace";
+  ctx.fillStyle = "rgba(50,50,50,0.3)"; // oscuro y semi-transparente
+  ctx.fillText(message, 0, 18);
+  const texture = new THREE.CanvasTexture(canvas);
+  const sprite = new THREE.Sprite(new THREE.SpriteMaterial({map: texture, transparent:true}));
+  sprite.scale.set(w*0.02, h*0.02, 1);
+  sprite.position.set(position.x, position.y, position.z);
+  scene.add(sprite);
+  return sprite;
+}
+
+  // ------
+
+  
 function initAudio(){
   const listener = new THREE.AudioListener();
   camera.add(listener);
@@ -542,6 +574,14 @@ function connectUnderground(elements, count = 20) { // menos líneas
 }
 
 
+// --- Colocar los textos ocultos entre los árboles ---
+const hiddenSprites = [];
+for(let i=0; i<hiddenTexts.length; i++){
+  const x = Math.random()*600 - 300;
+  const z = Math.random()*600 - 300;
+  const y = 0.5 + Math.random()*2; // altura del tronco/copa
+  hiddenSprites.push(createHiddenText(hiddenTexts[i], {x, y, z}));
+}
 
 
 
