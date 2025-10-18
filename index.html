@@ -154,7 +154,7 @@ h5 {
   <button id="enterBtn">Entrar al bosque</button>
 
 <div><h6>Las obras sonoras incluidas en esta experiencia hacen parte de la selección del Festival La Ilusión, y son propiedad de sus autorxs<br>Las obras de individuales están disponibles en www.lailusionfestival.com</h6></div>
-<div><h2>|||| @vlahebo v1.8g(f)</h2></div>
+<div><h2>|||| @vlahebo v1.8g(fu)</h2></div>
 
 </div>
 
@@ -417,7 +417,7 @@ function preloadAudios(audioData, onComplete) {
         loaded++;
         const progress = Math.round((loaded / total) * 100);
         console.log(`Cargando audios: ${Math.round(progress)}%`);
-        const loadingProgress = document.getElementById('loadingProgress');
+        const loadingProgress = document.getElementById('loadingText');
         if (loadingProgress) loadingProgress.textContent = `Cargando audios: ${progress}%`;
         if (loaded === total) {
           console.log('✅ Todos los audios precargados');
