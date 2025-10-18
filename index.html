@@ -125,7 +125,6 @@ h5 {
 </style>
 </head>
 <body>
-<div id="loadingText">Cargando audios: 0%</div>
 
 <div id="forestLossCounter" style="
   position: fixed;
@@ -141,7 +140,8 @@ h5 {
 "></div>
 <div id="overlay">
 
-  
+  <div id="loadingText">Cargando audios: 0%</div>
+
   
   <div><h3><center><strong>Festival La Ilusión | Escuchar el bosque</strong></center></h3></div>
   <div><h5>||| La experiencia inmersiva solo es posible si usas audifonos |||</center></h5></div>
@@ -150,7 +150,7 @@ h5 {
   <button id="enterBtn">Entrar al bosque</button>
 
 <div><h6>Las obras sonoras incluidas en esta experiencia hacen parte de la selección del Festival La Ilusión, y son propiedad de sus autorxs<br>Las obras de individuales están disponibles en www.lailusionfestival.com</h6></div>
-<div><h2>|||| @vlahebo v1.8g(full**)</h2></div>
+<div><h2>|||| @vlahebo v1.8g(full**aa)</h2></div>
 
 </div>
 
@@ -398,12 +398,15 @@ function createHiddenText(message, position) {
   return sprite;
 }
 
-  // ------ precarga
+  // --- Precarga de audios ---
 function preloadAudios(audioData, onComplete) {
   const audioLoader = new THREE.AudioLoader();
   let loaded = 0;
   const total = audioData.length;
   const buffers = [];
+
+  const loadingText = document.getElementById('loadingText');
+  if (loadingText) loadingText.style.display = 'block';
 
   audioData.forEach((item, i) => {
     audioLoader.load(
@@ -412,17 +415,16 @@ function preloadAudios(audioData, onComplete) {
         buffers[i] = buffer;
         loaded++;
         const progress = Math.round((loaded / total) * 100);
-        console.log(`Cargando audios: ${Math.round(progress)}%`);
-        const loadingProgress = document.getElementById('loadingText');
-        if (loadingProgress) loadingProgress.textContent = `Cargando audios: ${progress}%`;
-        const loadingBar = document.getElementById('loadingBar');
-if (loadingBar) loadingBar.style.width = `${progress}%`;
+        console.log(`Cargando audios: ${progress}%`);
+        if (loadingText) loadingText.textContent = `Cargando audios: ${progress}%`;
+
         if (loaded === total) {
           console.log('✅ Todos los audios precargados');
-          onComplete(buffers);
-
-          const overlay = document.getElementById('loadingOverlay');
-if (overlay) overlay.style.display = 'none';
+          if (loadingText) loadingText.textContent = 'Audios cargados. Entrando al bosque...';
+          setTimeout(() => {
+            loadingText.style.display = 'none';
+            onComplete(buffers);
+          }, 800);
         }
       },
       undefined,
