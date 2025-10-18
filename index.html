@@ -150,7 +150,7 @@ h5 {
   <button id="enterBtn">Entrar al bosque</button>
 
 <div><h6>Las obras sonoras incluidas en esta experiencia hacen parte de la selección del Festival La Ilusión, y son propiedad de sus autorxs<br>Las obras de individuales están disponibles en www.lailusionfestival.com</h6></div>
-<div><h2>|||| @vlahebo v1.8i</h2></div>
+<div><h2>|||| @vlahebo v1.8h</h2></div>
 
 </div>
 
@@ -366,24 +366,14 @@ const audioData = [
 ];
 
 // --- Textos ocultos entre los árboles ---
-const hiddenTextMessages = [
-  "El mundo siempre es nuevo... Por muy viejas que sean sus raíces. — Ursula K. Le Guin",
-  "Como un tejido, para restaurar un bosque primero debemos entender de qué está hecho. — Humberto Cumbalaza",
-  "El florecimiento será cultivado como una respons|habilidad multiespecies. — Donna J. Haraway",
-  "Construir relaciones simbióticas significa aprender a prestar atención. — Helen Torres"
+const hiddenTexts = [
+  "El mundo siempre es nuevo...Por muy viejas que sean sus raíces - Ursula K Leguin",
+  "Como un tejido, para restaurar un bosque primero debemos entende de qué está hecho - Humberto Cumbalaza",
+  "El florecimiento será cultivado como una respons|habilidad multiespecies - Donna J. Haraway",
+  "Construir relaciones simbióticas significa aprender a prestar atención - Helen Torres",
 ];
 
-// Crear sprites de texto escondidos
-const hiddenTexts = hiddenTextMessages.map((msg, i) => {
-  const pos = new THREE.Vector3(
-    (Math.random() - 0.5) * 300, // dispersión aleatoria
-    0,
-    (Math.random() - 0.5) * 300
-  );
-  return createHiddenText(msg, pos);
-});
-
-// Conectar los textos ocultos con árboles al azar mediante líneas subterráneas
+  // Conecta los textos ocultos con árboles al azar mediante líneas subterráneas
 hiddenTexts.forEach(textSprite => {
   const randomTree = treePositions[Math.floor(Math.random() * treePositions.length)];
   connectUnderground(
