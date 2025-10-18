@@ -150,7 +150,7 @@ h5 {
   <button id="enterBtn">Entrar al bosque</button>
 
 <div><h6>Las obras sonoras incluidas en esta experiencia hacen parte de la selección del Festival La Ilusión, y son propiedad de sus autorxs<br>Las obras de individuales están disponibles en www.lailusionfestival.com</h6></div>
-<div><h2>|||| @vlahebo v1.8g</h2></div>
+<div><h2>|||| @vlahebo v1.8g(a)</h2></div>
 
 </div>
 
@@ -555,6 +555,10 @@ function initAudio(){
   });
 
   connectUnderground(humanTrees, 40); // 40 conexiones subterráneas
+  // --- Conexiones subterráneas entre árboles y textos ocultos ---
+  const combinedElements = [...humanTrees, ...hiddenSprites];
+  connectUnderground(combinedElements, 30); // 30 conexiones mixtas
+  connectTextsToTrees(hiddenSprites, humanTrees, 25); // conecta textos con árboles
 
 }
 
@@ -604,7 +608,30 @@ for(let i=0; i<hiddenTexts.length; i++){
   hiddenSprites.push(createHiddenText(hiddenTexts[i], {x, y, z}));
 }
 
+// --- Conectar textos ocultos a árboles humanos al azar ---
+function connectTextsToTrees(hiddenSprites, humanTrees, count = 20) {
+  for (let i = 0; i < count; i++) {
+    const textSprite = hiddenSprites[Math.floor(Math.random() * hiddenSprites.length)];
+    const randomTree = humanTrees[Math.floor(Math.random() * humanTrees.length)];
+    if (!textSprite || !randomTree) continue;
 
+    const depth = -0.5 - Math.random() * 1.5;
+    const midX = (randomTree.position.x + textSprite.position.x) / 2 + (Math.random() - 0.5) * 2;
+    const midZ = (randomTree.position.z + textSprite.position.z) / 2 + (Math.random() - 0.5) * 2;
+
+    const curve = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(randomTree.position.x, depth, randomTree.position.z),
+      new THREE.Vector3(midX, depth - Math.random(), midZ),
+      new THREE.Vector3(textSprite.position.x, depth, textSprite.position.z)
+    ]);
+
+    const geometry = new THREE.BufferGeometry().setFromPoints(curve.getPoints(20));
+    const colors = [0x113311, 0x224422, 0x335533];
+    const material = new THREE.LineBasicMaterial({ color: colors[Math.floor(Math.random() * colors.length)] });
+    const line = new THREE.Line(geometry, material);
+    scene.add(line);
+  }
+}
 
 // --- Controles y animación ---
 const controls = new PointerLockControls(camera, renderer.domElement);
