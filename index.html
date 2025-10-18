@@ -150,7 +150,7 @@ h5 {
   <button id="enterBtn">Entrar al bosque</button>
 
 <div><h6>Las obras sonoras incluidas en esta experiencia hacen parte de la selección del Festival La Ilusión, y son propiedad de sus autorxs<br>Las obras de individuales están disponibles en www.lailusionfestival.com</h6></div>
-<div><h2>|||| @vlahebo v1.8k</h2></div>
+<div><h2>|||| @vlahebo v1.8l</h2></div>
 
 </div>
 
@@ -265,6 +265,9 @@ const dirLight = new THREE.DirectionalLight(0xffffff,0.8);
 dirLight.position.set(10,20,10);
 scene.add(dirLight);
 
+  // --- Arreglo global para guardar posiciones de los árboles ---
+const treePositions = [];
+  
 // --- Árboles deformes y asimétricos ---
 function createDeformedTree(x,z){
   const scale = Math.random()*1.5+0.5;
@@ -294,6 +297,9 @@ function createDeformedTree(x,z){
   crown.position.set(x,2.4*scale,z);
   crown.scale.set(Math.random()*1.3+0.7, Math.random()*1.8+0.4, Math.random()*1.3+0.7);
   scene.add(crown);
+    // ✅ Guarda posición para las conexiones subterráneas
+  treePositions.push({ x, z });
+
 }
 
 // --- Capa densa de árboles deformes ---
