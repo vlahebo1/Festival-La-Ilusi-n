@@ -141,11 +141,7 @@ h5 {
 <div id="overlay">
 
   
-<div id="loadingText" 
-     style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
-     color:white;font-family:monospace;font-size:20px;z-index:999;">
-  Cargando audios: 0%
-</div>
+
   
   <div><h3><center><strong>Festival La Ilusión | Escuchar el bosque</strong></center></h3></div>
   <div><h5>||| La experiencia inmersiva solo es posible si usas audifonos |||</center></h5></div>
@@ -154,7 +150,7 @@ h5 {
   <button id="enterBtn">Entrar al bosque</button>
 
 <div><h6>Las obras sonoras incluidas en esta experiencia hacen parte de la selección del Festival La Ilusión, y son propiedad de sus autorxs<br>Las obras de individuales están disponibles en www.lailusionfestival.com</h6></div>
-<div><h2>|||| @vlahebo v1.8g(fu)</h2></div>
+<div><h2>|||| @vlahebo v1.8g(b)</h2></div>
 
 </div>
 
@@ -357,16 +353,16 @@ function makeTextSprite(message){
 }
 
 const audioData = [
-  {url:'https://dn721609.ca.archive.org/0/items/festival-la-ilusion-2023/La%20Ilusio%CC%81n%20Festival%20-%20Bosque%20Cautivo%20-%20Ivonne%20Vazquez%20Portilla.wav', label:'[obra sonora] Bosque Cautivo - Ivonne Vazquez Portilla', pos:[0,1,0], color:0xff5555},
-  {url:'https://dn721609.ca.archive.org/0/items/festival-la-ilusion-2023/La%20Ilusio%CC%81n%20Festival%20-%20C001%20-%20Eliz%20Go%CC%81mez%20_Bioluminik_%20%28Obra%20sonora%29.wav', label:'[obra sonora] C001 - Eliz Gómez - _Bioluminik_', pos:[50,1,50], color:0x55ff55},
-  {url:'https://dn721609.ca.archive.org/0/items/festival-la-ilusion-2023/La%20Ilusio%CC%81n%20Festival%20-%20Cuando%20suene%20el%20u%CC%81ltimo%20grillo%20-%20Fernando%20Feria%20_%20Irizaida%20Navar%20%28Obra%20sonora%29.wav', label:'[obra sonora] El último grillo - Fernando Feria | Irizaida Navar', pos:[-50,1,50], color:0x5555ff},
-  {url:'https://dn721609.ca.archive.org/0/items/festival-la-ilusion-2023/La%20Ilusio%CC%81n%20Festival%20-%20Devenir%20poemas%20-%20Cecilia%20Morales%20%28Obra%20sonora%29.wav', label:'[obra sonora] Devenir poemas - Cecilia Morales', pos:[-60,1,-60], color:0xffff55},
-  {url:'https://dn721609.ca.archive.org/0/items/festival-la-ilusion-2023/La%20Ilusio%CC%81n%20Festival%20-%20EcoEscucha%20-%20Zael%20Ortega%20%28Obra%20sonora%29.wav', label:'[obra sonora] EcoEscucha - Zael Ortega', pos:[60,1,-60], color:0xff55ff},
-  {url:'https://dn721609.ca.archive.org/0/items/festival-la-ilusion-2023/La%20Ilusio%CC%81n%20Festival%20-%20El%20ritmo%20es%20el%20agua%20de%20las%20gotas%20que%20caen%20cuando%20lloras%20-%20He%CC%81ctor%20Ulises%20Vera%20%28Obra%20sonora%29%20wav.wav', label:'[obra sonora] El ritmo es el agua de las gotas cuando lloras - Hector Ulises Vera', pos:[0,1,70], color:0x55ffff},
+  {url:'https://dn721609.ca.archive.org/0/items/festival-la-ilusion-2023/La%20Ilusio%CC%81n%20Festival%20-%20Bosque%20Cautivo%20-%20Ivonne%20Vazquez%20Portilla.wav', label:'Bosque Cautivo - Ivonne Vazquez Portilla', pos:[0,1,0], color:0xff5555},
+  {url:'https://dn721609.ca.archive.org/0/items/festival-la-ilusion-2023/La%20Ilusio%CC%81n%20Festival%20-%20C001%20-%20Eliz%20Go%CC%81mez%20_Bioluminik_%20%28Obra%20sonora%29.wav', label:'C001 - Eliz Gómez - _Bioluminik_', pos:[50,1,50], color:0x55ff55},
+  {url:'https://dn721609.ca.archive.org/0/items/festival-la-ilusion-2023/La%20Ilusio%CC%81n%20Festival%20-%20Cuando%20suene%20el%20u%CC%81ltimo%20grillo%20-%20Fernando%20Feria%20_%20Irizaida%20Navar%20%28Obra%20sonora%29.wav', label:'El último grillo - Fernando Feria | Irizaida Navar', pos:[-50,1,50], color:0x5555ff},
+  {url:'https://dn721609.ca.archive.org/0/items/festival-la-ilusion-2023/La%20Ilusio%CC%81n%20Festival%20-%20Devenir%20poemas%20-%20Cecilia%20Morales%20%28Obra%20sonora%29.wav', label:'Devenir poemas - Cecilia Morales', pos:[-60,1,-60], color:0xffff55},
+  {url:'https://dn721609.ca.archive.org/0/items/festival-la-ilusion-2023/La%20Ilusio%CC%81n%20Festival%20-%20EcoEscucha%20-%20Zael%20Ortega%20%28Obra%20sonora%29.wav', label:'EcoEscucha - Zael Ortega', pos:[60,1,-60], color:0xff55ff},
+  {url:'https://dn721609.ca.archive.org/0/items/festival-la-ilusion-2023/La%20Ilusio%CC%81n%20Festival%20-%20El%20ritmo%20es%20el%20agua%20de%20las%20gotas%20que%20caen%20cuando%20lloras%20-%20He%CC%81ctor%20Ulises%20Vera%20%28Obra%20sonora%29%20wav.wav', label:'El ritmo es el agua de las gotas cuando lloras - Hector Ulises Vera', pos:[0,1,70], color:0x55ffff},
   {url:'https://dn721609.ca.archive.org/0/items/festival-la-ilusion-2023/La%20Ilusio%CC%81n%20Festival%20-%20Eucalyptus%20-%20Nicolas%20Vazquez.wav', label:'Eucalyptus - Nicolas Vasquez', pos:[80,1,0], color:0xffffff},
-  {url:'https://dn721609.ca.archive.org/0/items/festival-la-ilusion-2023/La%20Ilusio%CC%81n%20Festival%20-%20Grindelia%20Buphtalmoides%20-%20Rodrigo%20Tamay%20.wav', label:'[obra sonora] Grindelia Buphtalmoides - Rodrigo Tamay', pos:[-80,1,0], color:0xffaa55},
-  {url:'https://dn721609.ca.archive.org/0/items/festival-la-ilusion-2023/La%20Ilusio%CC%81n%20Festival%20-%20Lluvia%2C%20ri%CC%81o%2C%20humedal%20-%20Marina%20Carrasco%20%28Radio%29.wav', label:'[obra sonora] Lluvia, río, humedal - Marina Carrasco', pos:[0,1,-80], color:0xaa55ff},
-  {url:'https://dn721609.ca.archive.org/0/items/festival-la-ilusion-2023/La%20Ilusio%CC%81n%20Festival%20-%20Ralu%CC%81n%20-%20Francisco%20Fuenzalida.wav', label:'[obra sonora] Ralún - Francisco Fuen Salida', pos:[20,1,-100], color:0xffffff},
+  {url:'https://dn721609.ca.archive.org/0/items/festival-la-ilusion-2023/La%20Ilusio%CC%81n%20Festival%20-%20Grindelia%20Buphtalmoides%20-%20Rodrigo%20Tamay%20.wav', label:'Grindelia Buphtalmoides - Rodrigo Tamay', pos:[-80,1,0], color:0xffaa55},
+  {url:'https://dn721609.ca.archive.org/0/items/festival-la-ilusion-2023/La%20Ilusio%CC%81n%20Festival%20-%20Lluvia%2C%20ri%CC%81o%2C%20humedal%20-%20Marina%20Carrasco%20%28Radio%29.wav', label:'Lluvia, río, humedal - Marina Carrasco', pos:[0,1,-80], color:0xaa55ff},
+  {url:'https://dn721609.ca.archive.org/0/items/festival-la-ilusion-2023/La%20Ilusio%CC%81n%20Festival%20-%20Ralu%CC%81n%20-%20Francisco%20Fuenzalida.wav', label:'Ralún - Francisco Fuen Salida', pos:[20,1,-100], color:0xffffff},
 ];
 
 // --- Textos ocultos entre los árboles ---
@@ -402,41 +398,10 @@ function createHiddenText(message, position) {
   return sprite;
 }
 
-  // ------ precarga
-function preloadAudios(audioData, onComplete) {
-  const audioLoader = new THREE.AudioLoader();
-  let loaded = 0;
-  const total = audioData.length;
-  const buffers = [];
+  // ------
 
-  audioData.forEach((item, i) => {
-    audioLoader.load(
-      item.url,
-      (buffer) => {
-        buffers[i] = buffer;
-        loaded++;
-        const progress = Math.round((loaded / total) * 100);
-        console.log(`Cargando audios: ${Math.round(progress)}%`);
-        const loadingProgress = document.getElementById('loadingText');
-        if (loadingProgress) loadingProgress.textContent = `Cargando audios: ${progress}%`;
-        if (loaded === total) {
-          console.log('✅ Todos los audios precargados');
-          onComplete(buffers);
-        }
-      },
-      undefined,
-      (err) => {
-        console.error('Error cargando', item.url, err);
-        loaded++;
-        if (loaded === total) onComplete(buffers);
-      }
-    );
-  });
-}
-
-  //------ init audio
   
-function initAudio(buffers){
+function initAudio(){
   const listener = new THREE.AudioListener();
   camera.add(listener);
   const humanTrees = [];
@@ -561,16 +526,17 @@ function initAudio(buffers){
     scene.add(group);
 
     // --- Audio posicional ---
-  const buffer = buffers[index];
-const sound = new THREE.PositionalAudio(listener);
-if (buffer) {
-  sound.setBuffer(buffer);
-  sound.setRefDistance(12);
-  sound.setLoop(true);
-  sound.setVolume(0.5);
-  sound.play();
-}
-group.add(sound);
+    const sound = new THREE.PositionalAudio(listener);
+    const audioLoader = new THREE.AudioLoader();
+    audioLoader.load(item.url, buffer=>{
+      sound.setBuffer(buffer);
+      sound.setRefDistance(12);
+      sound.setLoop(true);
+      sound.setVolume(0.5);
+      sound.play();
+    });
+    group.add(sound);
+    humanTrees.push(group);
 
 
     // --- Texto ---
@@ -789,25 +755,7 @@ document.getElementById('enterBtn').addEventListener('click', () => {
   overlay.style.display = 'none';
 
   const isMobile = /Mobi|Android/i.test(navigator.userAgent);
-
-  // Mostrar mensaje de carga
-  const loading = document.createElement('div');
-  loading.id = 'loadingText';
-  loading.style.position = 'fixed';
-  loading.style.top = '50%';
-  loading.style.left = '50%';
-  loading.style.transform = 'translate(-50%, -50%)';
-  loading.style.color = 'white';
-  loading.style.fontSize = '20px';
-  loading.style.zIndex = '999';
-  loading.innerText = 'Cargando audios...';
-  document.body.appendChild(loading);
-
-  // Precargar audios antes de iniciar
-  preloadAudios(audioData, (buffers) => {
-    document.body.removeChild(loading); // eliminar mensaje
-    initAudio(buffers); // iniciar bosque con audios cargados
-
+  initAudio(); 
 
   if(isMobile){
     // Posición inicial
@@ -842,9 +790,7 @@ forestLossDiv.textContent = `Bosque perdido en Colombia mientras estás aquí:${
     controls.lock();
     animate();
   }
-}); // cierre de preloadAudios
-  });
-  
+});
   
 </script>
 
