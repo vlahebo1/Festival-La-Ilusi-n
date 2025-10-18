@@ -141,7 +141,11 @@ h5 {
 <div id="overlay">
 
   
-
+<div id="loadingText" 
+     style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
+     color:white;font-family:monospace;font-size:20px;z-index:999;">
+  Cargando audios: 0%
+</div>
   
   <div><h3><center><strong>Festival La Ilusión | Escuchar el bosque</strong></center></h3></div>
   <div><h5>||| La experiencia inmersiva solo es posible si usas audifonos |||</center></h5></div>
@@ -150,7 +154,7 @@ h5 {
   <button id="enterBtn">Entrar al bosque</button>
 
 <div><h6>Las obras sonoras incluidas en esta experiencia hacen parte de la selección del Festival La Ilusión, y son propiedad de sus autorxs<br>Las obras de individuales están disponibles en www.lailusionfestival.com</h6></div>
-<div><h2>|||| @vlahebo v1.8g(b)</h2></div>
+<div><h2>|||| @vlahebo v1.8g(c)</h2></div>
 
 </div>
 
@@ -398,10 +402,41 @@ function createHiddenText(message, position) {
   return sprite;
 }
 
-  // ------
+  // ------ precarga
+function preloadAudios(audioData, onComplete) {
+  const audioLoader = new THREE.AudioLoader();
+  let loaded = 0;
+  const total = audioData.length;
+  const buffers = [];
 
+  audioData.forEach((item, i) => {
+    audioLoader.load(
+      item.url,
+      (buffer) => {
+        buffers[i] = buffer;
+        loaded++;
+        const progress = Math.round((loaded / total) * 100);
+        console.log(`Cargando audios: ${progress}%`);
+        document.getElementById('loadingText').innerText = `Cargando audios: ${progress}%`;
+
+        if (loaded === total) {
+          console.log('✅ Todos los audios precargados');
+          onComplete(buffers);
+        }
+      },
+      undefined,
+      (err) => {
+        console.error('Error cargando', item.url, err);
+        loaded++;
+        if (loaded === total) onComplete(buffers);
+      }
+    );
+  });
+}
+
+  //------ init audio
   
-function initAudio(){
+function initAudio(buffers){
   const listener = new THREE.AudioListener();
   camera.add(listener);
   const humanTrees = [];
@@ -526,15 +561,14 @@ function initAudio(){
     scene.add(group);
 
     // --- Audio posicional ---
-    const sound = new THREE.PositionalAudio(listener);
-    const audioLoader = new THREE.AudioLoader();
-    audioLoader.load(item.url, buffer=>{
-      sound.setBuffer(buffer);
-      sound.setRefDistance(12);
-      sound.setLoop(true);
-      sound.setVolume(0.5);
-      sound.play();
-    });
+    const buffer = buffers[index];
+if (buffer) {
+  sound.setBuffer(buffer);
+  sound.setRefDistance(12);
+  sound.setLoop(true);
+  sound.setVolume(0.5);
+  sound.play();
+});
     group.add(sound);
     humanTrees.push(group);
 
@@ -755,7 +789,25 @@ document.getElementById('enterBtn').addEventListener('click', () => {
   overlay.style.display = 'none';
 
   const isMobile = /Mobi|Android/i.test(navigator.userAgent);
-  initAudio(); 
+
+  // Mostrar mensaje de carga
+  const loading = document.createElement('div');
+  loading.id = 'loadingText';
+  loading.style.position = 'fixed';
+  loading.style.top = '50%';
+  loading.style.left = '50%';
+  loading.style.transform = 'translate(-50%, -50%)';
+  loading.style.color = 'white';
+  loading.style.fontSize = '20px';
+  loading.style.zIndex = '999';
+  loading.innerText = 'Cargando audios...';
+  document.body.appendChild(loading);
+
+  // Precargar audios antes de iniciar
+  preloadAudios(audioData, (buffers) => {
+    document.body.removeChild(loading); // eliminar mensaje
+    initAudio(buffers); // iniciar bosque con audios cargados
+
 
   if(isMobile){
     // Posición inicial
