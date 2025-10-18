@@ -154,7 +154,7 @@ h5 {
   <button id="enterBtn">Entrar al bosque</button>
 
 <div><h6>Las obras sonoras incluidas en esta experiencia hacen parte de la selección del Festival La Ilusión, y son propiedad de sus autorxs<br>Las obras de individuales están disponibles en www.lailusionfestival.com</h6></div>
-<div><h2>|||| @vlahebo v1.8g(c)</h2></div>
+<div><h2>|||| @vlahebo v1.8g(d)</h2></div>
 
 </div>
 
@@ -561,16 +561,16 @@ function initAudio(buffers){
     scene.add(group);
 
     // --- Audio posicional ---
-    const buffer = buffers[index];
+  const buffer = buffers[index];
+const sound = new THREE.PositionalAudio(listener);
 if (buffer) {
   sound.setBuffer(buffer);
   sound.setRefDistance(12);
   sound.setLoop(true);
   sound.setVolume(0.5);
   sound.play();
-});
-    group.add(sound);
-    humanTrees.push(group);
+}
+group.add(sound);
 
 
     // --- Texto ---
