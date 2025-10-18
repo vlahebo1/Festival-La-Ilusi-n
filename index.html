@@ -140,22 +140,11 @@ h5 {
 "></div>
 <div id="overlay">
 
-<!-- Barra de progreso -->
-<div id="loadingOverlay" style="
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: rgba(0,0,0,0.8);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-">
-  <div id="loadingText" style="color: white; font-size: 20px; margin-bottom: 20px;">Cargando audios: 0%</div>
-  <div style="width: 60%; height: 20px; background: rgba(255,255,255,0.2); border-radius: 10px;">
-    <div id="loadingBar" style="width: 0%; height: 100%; background: #4CAF50; border-radius: 10px;"></div>
-  </div>
+  
+<div id="loadingText" 
+     style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
+     color:white;font-family:monospace;font-size:20px;z-index:999;">
+  Cargando audios: 0%
 </div>
   
   <div><h3><center><strong>Festival La Ilusión | Escuchar el bosque</strong></center></h3></div>
@@ -165,7 +154,7 @@ h5 {
   <button id="enterBtn">Entrar al bosque</button>
 
 <div><h6>Las obras sonoras incluidas en esta experiencia hacen parte de la selección del Festival La Ilusión, y son propiedad de sus autorxs<br>Las obras de individuales están disponibles en www.lailusionfestival.com</h6></div>
-<div><h2>|||| @vlahebo v1.8g(full**aabbcc)</h2></div>
+<div><h2>|||| @vlahebo v1.8g(fu)</h2></div>
 
 </div>
 
@@ -413,19 +402,12 @@ function createHiddenText(message, position) {
   return sprite;
 }
 
-  // --- Precarga de audios ---
-// --- Precarga de audios ---
+  // ------ precarga
 function preloadAudios(audioData, onComplete) {
   const audioLoader = new THREE.AudioLoader();
   let loaded = 0;
   const total = audioData.length;
   const buffers = [];
-
-  const loadingOverlay = document.getElementById('loadingOverlay');
-  const loadingText = document.getElementById('loadingText');
-  const loadingBar = document.getElementById('loadingBar');
-
-  loadingOverlay.style.display = 'flex';
 
   audioData.forEach((item, i) => {
     audioLoader.load(
@@ -434,26 +416,19 @@ function preloadAudios(audioData, onComplete) {
         buffers[i] = buffer;
         loaded++;
         const progress = Math.round((loaded / total) * 100);
-
-        loadingText.textContent = `Cargando audios: ${progress}%`;
-        loadingBar.style.width = progress + '%';
-
+        console.log(`Cargando audios: ${Math.round(progress)}%`);
+        const loadingProgress = document.getElementById('loadingText');
+        if (loadingProgress) loadingProgress.textContent = `Cargando audios: ${progress}%`;
         if (loaded === total) {
-          loadingText.textContent = 'Audios cargados. Entrando al bosque...';
-          setTimeout(() => {
-            loadingOverlay.style.display = 'none';
-            onComplete(buffers);
-          }, 800);
+          console.log('✅ Todos los audios precargados');
+          onComplete(buffers);
         }
       },
       undefined,
       (err) => {
         console.error('Error cargando', item.url, err);
         loaded++;
-        if (loaded === total) {
-          loadingOverlay.style.display = 'none';
-          onComplete(buffers);
-        }
+        if (loaded === total) onComplete(buffers);
       }
     );
   });
